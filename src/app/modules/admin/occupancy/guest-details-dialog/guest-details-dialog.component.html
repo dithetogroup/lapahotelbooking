@@ -1,0 +1,121 @@
+<form [formGroup]="guestForm" (ngSubmit)="editGuest()">
+    <div class="dialogContainer">
+      <div class="modalHeader">
+        <div class="avatarDetails">
+          <div class="modalTitle">{{ dialogTitle }}</div>
+        </div>
+        <button mat-icon-button (click)="dialogRef.close()" class="modal-close-button" aria-label="Close dialog">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+  
+      <mat-dialog-content>
+        <mat-tab-group>
+          <!-- Step 1: Personal Info -->
+          <mat-tab label="Personal Info">
+            <div *ngIf="!isEditMode">
+              <p><strong>Name:</strong> {{ roomData.guestDetails?.personalInfo?.title }} {{ roomData.guestDetails?.personalInfo?.name }} {{ roomData.guestDetails?.personalInfo?.surname }}</p>
+              <p><strong>Address:</strong> {{ roomData.guestDetails?.personalInfo?.address }}</p>
+              <p><strong>Phone:</strong> {{ roomData.guestDetails?.personalInfo?.phone }}</p>
+              <p><strong>Email:</strong> {{ roomData.guestDetails?.personalInfo?.email }}</p>
+            </div>
+  
+            <div *ngIf="isEditMode" class="form-grid-2col m-t-24">
+              <mat-form-field appearance="outline">
+                <mat-label>Title</mat-label>
+                <mat-select formControlName="guest_title">
+                  <mat-option value="Mr">Mr</mat-option>
+                  <mat-option value="Mrs">Mrs</mat-option>
+                  <mat-option value="Miss">Miss</mat-option>
+                </mat-select>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="guest_name">
+                <mat-error *ngIf="
+                guestForm.controls['guest_name'].invalid &&
+                (guestForm.controls['guest_name'].dirty || guestForm.controls['guest_name'].touched)">
+                <span *ngIf="guestForm.controls['guest_name'].hasError('required')">Name is required.</span>
+                <span *ngIf="guestForm.controls['guest_name'].hasError('pattern')"> Name cannot contain special characters.</span>
+              </mat-error>              </mat-form-field>
+  
+              <mat-form-field appearance="outline">
+                <mat-label>Surname</mat-label>
+                <input matInput formControlName="guest_surname">
+                <mat-error *ngIf="
+                guestForm.controls['guest_surname'].invalid &&
+                (guestForm.controls['guest_surname'].dirty || guestForm.controls['guest_surname'].touched)">
+                <span *ngIf="guestForm.controls['guest_surname'].hasError('required')">Surname is required.</span>
+                <span *ngIf="guestForm.controls['guest_surname'].hasError('pattern')"> Surname cannot contain special characters.</span>
+              </mat-error>              
+            </mat-form-field>
+  
+              <mat-form-field appearance="outline">
+                <mat-label>Phone</mat-label>
+                <input matInput formControlName="guest_phone" maxlength="10">
+                <mat-error *ngIf="
+                guestForm.controls['guest_phone'].invalid &&
+                (guestForm.controls['guest_phone'].dirty || guestForm.controls['guest_phone'].touched)">
+                <span *ngIf="guestForm.controls['guest_phone'].hasError('required')">Phone is required.</span>
+                <span *ngIf="guestForm.controls['guest_phone'].hasError('pattern')"> Phone must be 10 digits.</span>
+              </mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="guest_email" type="email">
+                <mat-error *ngIf="
+                guestForm.controls['guest_email'].invalid &&
+                (guestForm.controls['guest_email'].dirty || guestForm.controls['guest_email'].touched)">
+                <span *ngIf="guestForm.controls['guest_email'].hasError('email')"> Invalid email</span>
+              </mat-error>
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline">
+                <mat-label>Address</mat-label>
+                <input matInput formControlName="guest_address">
+              </mat-form-field>
+  
+              <div *ngIf="!isEditMode" >
+                <mat-checkbox formControlName="guest_invoice">Send Invoice</mat-checkbox>
+              </div>
+              
+            </div>
+          </mat-tab>
+  
+          <!-- Step 2: Booking Info -->
+          <mat-tab label="Booking Info">
+            <p><strong>Check-In:</strong> {{ roomData.guestDetails?.reservationInfo?.checkInDate }}</p>
+            <p><strong>Check-Out:</strong> {{ roomData.guestDetails?.reservationInfo?.checkOutDate }}</p>
+            <p><strong>Booking Ref:</strong> {{ roomData.guestDetails?.reservationInfo?.bookingReference }}</p>
+          </mat-tab>
+  
+          <!-- Step 3: Payment Info -->
+          <mat-tab label="Payment Info">
+            <p><strong>Payment Type:</strong> {{ roomData.guestDetails?.reservationInfo?.paymentTypes }}</p>
+            <p><strong>Payment Status:</strong> {{ roomData.guestDetails?.reservationInfo?.paymentStatus }}</p>
+            <p><strong>Amount:</strong> R{{ roomData.guestDetails?.reservationInfo?.paymentAmount }}</p>
+          </mat-tab>
+  
+          <!-- Step 4: Extras -->
+          <mat-tab label="Extras">
+            <p><strong>Special Requests:</strong> {{ roomData.guestDetails?.specialRequests }}</p>
+            <p><strong>Packages:</strong> {{ roomData.guestDetails?.package?.name }}</p>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-dialog-content>
+
+      <mat-dialog-actions align="end">
+        <button mat-stroked-button type="submit" [disabled]="isEditMode && guestForm.invalid">
+          {{ isEditMode ? 'Save Changes' : 'Edit Personal Info' }}
+        </button>
+          <button mat-stroked-button color="warn" (click)="confirmCancelBooking()">
+            Cancel Booking
+          </button>
+        <button mat-stroked-button type="button" mat-dialog-close>Close</button>
+      </mat-dialog-actions>
+
+    </div>
+  </form>
+  

@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Cancel Booking</h2>
+<mat-dialog-content>
+    <p>Please provide a reason for cancelling this booking.</p>
+
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="col-md-12">
+                <mat-form-field appearance="outline" class="w-100 full-width">
+                    <mat-label>Reason</mat-label>
+                    <textarea matInput formControlName="reason" rows="4"></textarea>
+                </mat-form-field>
+            </div>
+            <div class="col-md-12 mb-3">
+                <mat-form-field appearance="outline" class="w-100 full-width">
+                  <mat-label>Refund Status</mat-label>
+                  <mat-select formControlName="refund_status">
+                    <mat-option value="Refunded">Refunded</mat-option>
+                    <mat-option value="Processing">Processing</mat-option>
+                    <mat-option value="Pending">Pending</mat-option>
+                    <mat-option value="None">None</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+        </div>
+        <mat-dialog-actions align="end">
+            <button mat-button (click)="close()">Close</button>
+            <button mat-raised-button color="warn" (click)="submit()" [disabled]="form.invalid">
+                Submit Cancellation
+            </button>
+        </mat-dialog-actions>
+
+    </form>
+</mat-dialog-content>

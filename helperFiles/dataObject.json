@@ -1,0 +1,22 @@
+{
+  "guest_title": "Mr",
+  "guest_name": "Jackson",
+  "guest_surname": "Makga",
+  "guest_address": "1234 Jan",
+  "guest_phone": "0764631679",
+  "guest_email": "jack@us.com",
+  "checkInDate": "2025-08-28",
+  "special_requests": "marathanata",
+  "checkOutDate": "2025-08-30",
+  "package_id": "3",
+  "payment_types": "Cash",
+  "payment_status": "Paid",
+  "payment_amount": 1200,
+  "email_invoice": "1",
+  "roomNo": "2",
+  "bedTypeId": "3",
+  "roomTypeId": "3",
+  "bookingId": "3",
+  "occupants_type_id": "8",
+  "booking_status": "Booked"
+}

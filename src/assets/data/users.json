@@ -1,0 +1,51 @@
+[
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "admin",
+      "name": "admin",
+      "email": "admin@163.com",
+      "role": [
+        {
+          "name": "ADMIN",
+          "priority": 1
+        }
+      ],
+      "permissions": ["canAdd", "canDelete", "canEdit", "canRead"],
+      "avatar": "./assets/images/boni.png"
+    },
+    {
+      "id": 2,
+      "username": "employee",
+      "password": "employee",
+      "name": "Lethabo Mohumi",
+      "email": "employee@gmail.com",
+      "role": [
+        {
+          "name": "EMPLOYEE",
+          "priority": 2
+        }
+      ],
+      "permissions": ["canAdd", "canEdit", "canRead"],
+      "avatar": "./assets/images/avatars/bookings.jpg",
+      "refresh_token": true
+    },
+    {
+      "id": 3,
+      "username": "bookings",
+      "password": "bookings",
+      "name": "bookings",
+      "email": "bookings@lapahotel.co.za",
+      "role": [
+        {
+          "name": "BOOKING",
+          "priority": 3
+        }
+      ],
+      "permissions": ["canAdd", "canDelete", "canEdit", "canRead"],
+      "avatar": "./assets/images/avatars/bookings.jpg",
+      "refresh_token": true
+    }
+    
+  ]
+  

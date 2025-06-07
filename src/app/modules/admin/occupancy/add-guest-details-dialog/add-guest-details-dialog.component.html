@@ -1,0 +1,318 @@
+<div class="dialogContainer">
+  <div class="modalHeader">
+    <div class="avatarDetails">
+      <div class="modalTitle">Add Guest: Room #{{this.data.room.roomNo}}</div>
+    </div>
+    <button mat-icon-button (click)="dialogRef.close()" class="modal-close-button" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content>
+    <mat-horizontal-stepper linear #stepper>
+
+      <!-- Step 1: Guest Info -->
+      <mat-step [stepControl]="guestForm.get('guestInfoGroup')!">
+        <form [formGroup]="guestInfoForm">
+          <ng-template matStepLabel>Guest Info</ng-template>
+
+          <div class="row m-t-24">
+            <!-- Title -->
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100 full-width">
+                <mat-label>Title</mat-label>
+                <mat-select formControlName="guest_title">
+                  <mat-option value="Mr">Mr</mat-option>
+                  <mat-option value="Mrs">Mrs</mat-option>
+                  <mat-option value="Miss">Miss</mat-option>
+                  <mat-option value="Dr">Dr</mat-option>
+                  <mat-option value="Prof">Prof</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          
+            <!-- Name -->
+            <div class="col-md-6 mb-5">
+              <mat-form-field appearance="outline" class="w-100 full-width">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="guest_name">
+                <mat-error *ngIf="
+                guestInfoForm.controls['guest_name'].invalid &&
+                (guestInfoForm.controls['guest_name'].dirty || guestInfoForm.controls['guest_name'].touched)">
+                <span *ngIf="guestInfoForm.controls['guest_name'].hasError('required')">Name is required.</span>
+                <span *ngIf="guestInfoForm.controls['guest_name'].hasError('pattern')"> Name cannot contain special characters.</span>
+              </mat-error>
+              </mat-form-field>
+            </div>
+          
+            <!-- Surname -->
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100 full-width">
+                <mat-label>Surname</mat-label>
+                <input matInput formControlName="guest_surname">
+                <mat-error *ngIf="
+                guestInfoForm.controls['guest_surname'].invalid &&
+                (guestInfoForm.controls['guest_surname'].dirty || guestInfoForm.controls['guest_surname'].touched)">
+                <span *ngIf="guestInfoForm.controls['guest_surname'].hasError('required')">Surname is required.</span>
+                <span *ngIf="guestInfoForm.controls['guest_surname'].hasError('pattern')"> Surname cannot contain special characters.</span>
+              </mat-error>
+              </mat-form-field>
+            </div>
+          
+            <!-- Address -->
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100 full-width">
+                <mat-label>Address</mat-label>
+                <input matInput formControlName="guest_address">
+                <mat-error *ngIf="
+                guestInfoForm.controls['guest_address'].invalid &&
+                (guestInfoForm.controls['guest_address'].dirty || guestInfoForm.controls['guest_address'].touched)">
+                <span *ngIf="guestInfoForm.controls['guest_address'].hasError('required')">Address is required.</span>
+              </mat-error>
+              </mat-form-field>
+            </div>
+          
+            <!-- Phone -->
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100 full-width">
+                <mat-label>Phone</mat-label>
+                <input matInput formControlName="guest_phone" type="tel" maxlength="10">
+
+                <mat-error *ngIf="
+                guestInfoForm.controls['guest_phone'].invalid &&
+                (guestInfoForm.controls['guest_phone'].dirty || guestInfoForm.controls['guest_phone'].touched)">
+                <span *ngIf="guestInfoForm.controls['guest_phone'].hasError('required')">Phone is required.</span>
+                <span *ngIf="guestInfoForm.controls['guest_phone'].hasError('pattern')"> Phone must be 10 digits.</span>
+              </mat-error>
+              </mat-form-field>
+            </div>
+          
+            <!-- Email -->
+            <div class="col-md-6 mb-3">
+              <mat-form-field appearance="outline" class="w-100 full-width">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="guest_email" type="email">
+                <mat-error *ngIf="
+                guestInfoForm.controls['guest_email'].invalid &&
+                (guestInfoForm.controls['guest_email'].dirty || guestInfoForm.controls['guest_email'].touched)">
+                <span *ngIf="guestInfoForm.controls['guest_email'].hasError('email')"> Invalid email</span>
+              </mat-error>
+
+              </mat-form-field>
+            </div>
+          </div>
+          
+
+          <div class="d-flex justify-content-end">
+            <button mat-stroked-button matStepperNext [disabled]="!guestForm.get('guestInfoGroup')?.valid">Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Step 2: Booking -->
+      <mat-step [stepControl]="bookingForm">
+        <form [formGroup]="bookingForm">
+
+          <ng-template matStepLabel>Booking</ng-template>
+
+          <div class="row m-t-24">
+            <!-- Check-in / Check-out Dates -->
+            <div class="col-sm-6 m-b-24">
+              <mat-form-field appearance="outline" class="w-100 full-width">
+                <mat-label>Check-In Date</mat-label>
+                <input matInput [matDatepicker]="picker1" formControlName="checkInDate" [min]="minCheckInDate">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+                <mat-error *ngIf="guestForm.get('checkInDate')?.hasError('required')">Check-In is required</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-sm-6 m-b-24">
+              <mat-form-field appearance="outline" class="w-100 full-width">
+                <mat-label>Check-Out Date</mat-label>
+                <input matInput [matDatepicker]="picker2" formControlName="checkOutDate" [min]="minCheckOutDate">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+                <mat-error *ngIf="guestForm.get('checkOutDate')?.hasError('required')">Check-Out is required</mat-error>
+                <mat-error *ngIf="guestForm.hasError('invalidDateRange')"> Check-Out date must be after Check-In
+                  date.</mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Room selection -->
+            <div class="col-sm-12 m-b-24">
+            <mat-form-field appearance="outline" class="w-100 full-width">
+              <mat-label>Add More Rooms </mat-label>
+              <mat-select formControlName="roomNos" multiple>
+                <mat-option 
+                *ngFor="let room of allAvailableRooms" 
+                [value]="room.room_no"
+                [disabled]="room.room_no === data.room.roomNo">
+                Room #{{ room.room_no }} - {{ room.room_name }} 
+                <span *ngIf="room.room_no === data.room.roomNo">(Selected as main room)</span>
+              </mat-option>
+              </mat-select>
+              <div class="text-muted" *ngIf="bookingForm.get('roomNos')?.value?.length">
+                You’ve selected {{ bookingForm.get('roomNos')?.value.length }} room{{
+                bookingForm.get('roomNos')?.value.length > 1 ? 's' : '' }}.
+              </div>
+            </mat-form-field>
+            </div>
+
+
+
+            <!-- <div *ngFor="let room of getSelectedRoomDetails()">
+              {{ getRoomSummaryLabel(room) }}
+            </div> -->
+            
+
+            <!-- Packages -->
+            <div class="col-sm-12 m-b-24">
+              <mat-form-field appearance="outline" class="w-100 full-width">
+                <mat-label>Packages</mat-label>
+                <mat-select formControlName="package_id" multiple
+                  (selectionChange)="onPackageSelectionChange($event.value)">
+                  <mat-option *ngFor="let pkg of packages" [value]="pkg.id">
+                    {{ pkg.package_name }} (R{{ pkg.package_price | number:'1.2-2' }})
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+
+            <!-- Special Requests -->
+            <div class="col-sm-12 m-b-24">
+              <mat-form-field appearance="outline" class="w-100 full-width">
+                <mat-label>Special Requests</mat-label>
+                <textarea matInput formControlName="special_requests"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-stroked-button matStepperNext [disabled]="!guestForm.get('bookingGroup')?.valid">Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Step 3: Booking Summary -->
+      <mat-step>
+        <ng-template matStepLabel>Summary</ng-template>
+       
+          <!-- Summary section with corrected total and display -->
+          <div class="row m-t-24">
+            <div class="col-sm-12 m-b-24">
+              <div style="border: 1px solid #ccc; padding: 10px; border-radius: 6px; font-size: 0.95rem;" class="text-muted">
+                <strong>Booking Summary</strong>
+
+                <div>Number of Nights: <strong>{{ nights }}</strong></div>
+
+                <div *ngFor="let r of roomBreakdown">
+                  Room #{{ r.room_no }} ({{ r.room_name }}):
+                  {{ r.nights }} night{{ r.nights > 1 ? 's' : '' }} &#64; R{{ r.price }}/night = R{{ r.nights * r.price }}
+                </div>
+
+                <div *ngIf="selectedPackage.length > 0">
+                  <div *ngFor="let pkg of selectedPackage">
+                    Package ({{ pkg.package_name }}): R{{ pkg.package_price | number:'1.2-2' }}
+                  </div>
+                </div>
+
+                <div style="margin-top: 10px;">
+                  <strong>Total: R{{ totalAmountToPay | number:'1.2-2' }}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <div class="d-flex justify-content-between">
+          <button mat-stroked-button matStepperPrevious>Back</button>
+          <button mat-stroked-button matStepperNext>Next</button>
+        </div>
+      </mat-step>
+
+
+      <!-- Step 3: Payment -->
+      <mat-step>
+        <form [formGroup]="guestForm" (ngSubmit)="onSubmit()">
+          <ng-template matStepLabel>Payment</ng-template>
+
+          <div class="row m-t-24">
+            <!-- Payment Status -->
+            <div class="col-sm-6 m-b-24">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Payment Status</mat-label>
+                <mat-select formControlName="payment_status">
+                  <mat-option value="Paid">Paid</mat-option>
+                  <mat-option value="UnPaid">Unpaid</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- Payment Type -->
+            <div class="col-sm-6 m-b-24" *ngIf="paymentStatus === 'Paid'">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Payment Type</mat-label>
+                <mat-select formControlName="payment_types" (selectionChange)="onPaymentTypeSelect($event.value)">
+                  <mat-option value="Cash">Cash</mat-option>
+                  <mat-option value="EFT">EFT</mat-option>
+                  <mat-option value="Voucher">Voucher</mat-option>
+                  <mat-option value="Other">Other</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- "Other" Payment Input -->
+            <div class="col-sm-6 m-b-24" *ngIf="paymentStatus === 'Paid' && showOtherPaymentInput">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Other Payment Type</mat-label>
+                <input matInput [value]="otherPaymentType" (input)="onOtherPaymentTypeChange($event)">
+              </mat-form-field>
+            </div>
+
+            <!-- Total & Invoice -->
+            <div class="col-sm-6 m-b-24">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Total Amount</mat-label>
+                <input matInput [value]="'R' + totalAmountToPay" readonly>
+              </mat-form-field>
+            </div>
+
+
+            <!-- Booking Status -->
+            <!-- <div class="col-sm-6 m-b-24" *ngIf="paymentStatus === 'Paid'">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Booking Status</mat-label>
+              <mat-select formControlName="booking_status">
+                <mat-option value="CheckIn">CheckIn</mat-option>
+                <mat-option value="CheckOut">CheckOut</mat-option>
+                <mat-option value="Cancelled">Cancelled</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div> -->
+
+            <div class="col-sm-6 m-b-24" *ngIf="guestForm.get('guestInfoGroup.guest_email')?.value">
+
+              <!-- <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Send Invoice?</mat-label>
+                <mat-select formControlName="guest_invoice">
+                  <mat-option value="1">Yes</mat-option>
+                  <mat-option value="0">No</mat-option>
+                </mat-select>
+              </mat-form-field> -->
+              <mat-checkbox formControlName="guest_invoice">Send Invoice</mat-checkbox>
+            </div>
+
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-stroked-button color="primary" type="submit" [disabled]="!guestForm.valid">Submit</button>
+          </div>
+        </form>
+      </mat-step>
+    </mat-horizontal-stepper>
+
+
+  </div>
+</div>

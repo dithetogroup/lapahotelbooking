@@ -1,0 +1,48 @@
+
+    <div class="dialogContainer details-container">
+      <div class="modalHeader">
+        <div class="avatarDetails">
+          <div class="modalTitle">Cancelled Booking: {{data?.guest_title }}  {{ data.guest_name }} - {{data.guest_surname}}</div>
+        </div>
+        <button mat-icon-button (click)="dialogRef.close()" class="modal-close-button" aria-label="Close dialog">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+  
+      <mat-dialog-content>
+            <mat-tab-group>
+              <!-- Step 1: Personal Info -->
+              <mat-tab label="Personal Info">
+                  <p><strong>Address:</strong> {{ data.guest_address }}</p>
+                  <p><strong>Phone:</strong> {{ data.guest_phone }}</p>
+                  <p><strong>Email:</strong> {{ data.guest_email }}</p>
+      
+              </mat-tab>
+      
+              <!-- Step 2: Booking Info -->
+              <mat-tab label="Booking Info">
+                <p><strong>Check-In:</strong> {{ data.checkInDate }}</p>
+                <p><strong>Check-Out:</strong> {{ data?.checkOutDate }}</p>
+                <p><strong>Booking Ref:</strong> {{ data.booking_reference }}</p>
+                <p><strong> Room Number:</strong> {{ data.room_id }} / {{data.room_name}}</p>
+              </mat-tab>
+      
+              <!-- Step 3: Payment Info -->
+              <mat-tab label="Payment Info">
+                <p><strong>Payment Type:</strong> {{data?.payment_types }}</p>
+                <p><strong>Payment Status:</strong> {{ data.refund_status }}</p>
+                <p><strong>Amount:</strong> R{{ data.payment_amount }}</p>
+         
+              </mat-tab>
+      
+              <!-- Step 4: Extras -->
+              <mat-tab label="Admin">
+                <p><strong>Canceled By:</strong> {{ data.cancelled_by }}</p>
+                <p><strong>Booked By:</strong> {{ data.booked_by }}</p>
+                <p><strong>Refund Status:</strong> {{ data.refund_status }}</p>
+                <p><strong>Cancel Reason:</strong> {{ data.cancellation_reason }}</p>
+              </mat-tab>
+            </mat-tab-group>
+       
+      </mat-dialog-content>
+    </div>
