@@ -33,6 +33,11 @@ export class AllBookingService {
   getAllBookingLists(): Observable<{ status: string; data: AllBookingslist[] }> {
     return this.httpClient.get<{ status: string; data: AllBookingslist[] }>(this.baseUrl  + this.urlEndPoints.getAllBookingLists);
   }
+
+  
+  getAllBookingInvoices(): Observable<{ status: string; data: AllBookingslist[] }> {
+    return this.httpClient.get<{ status: string; data: AllBookingslist[] }>(this.baseUrl  + this.urlEndPoints.getAllBookingInvoices);
+  }
   
   addBookings(booking: AllBookings) {
     return this.httpClient.post<AllBookings>(

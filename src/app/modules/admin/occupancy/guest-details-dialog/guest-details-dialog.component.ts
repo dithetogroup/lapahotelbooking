@@ -77,7 +77,7 @@ export class GuestDetailsDialogComponent implements OnInit{
       guest_title: [''],
       guest_name:  ['',[Validators.required, Validators.pattern(/^[a-zA-Z ]*$/)], ],
       guest_surname: ['',[Validators.required, Validators.pattern(/^[a-zA-Z ]*$/)], ],
-      guest_email: ['', [Validators.required, Validators.email]],
+      guest_email: [''],
       guest_phone: [''],
       guest_address: [''],
       guest_invoice: [false],
