@@ -109,7 +109,7 @@
 
           <ng-container matColumnDef="room_name">
             <mat-header-cell *matHeaderCellDef>Room</mat-header-cell>
-            <mat-cell *matCellDef="let row">{{ row.room_name }}</mat-cell>
+            <mat-cell *matCellDef="let row">{{row.room_no}} - {{ row.room_name }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="package_name">
@@ -117,17 +117,17 @@
             <mat-cell *matCellDef="let row">{{ row.package_name }}</mat-cell>
           </ng-container>
 
-          <ng-container matColumnDef="booking_status">
+          <ng-container matColumnDef="checkInStatus">
             <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
             <mat-cell *matCellDef="let row">
               <span class="badge"
                     [ngClass]="{
-                      'badge-solid-yellow': row.booking_status === 'Booked',
-                      'badge-solid-green': row.booking_status === 'CheckIn',
-                      'badge-solid-red': row.booking_status === 'CheckOut',
-                      'badge-solid-orange': row.booking_status === 'Cancelled'
+                      'badge-solid-yellow': row.checkInStatus === 'Booked',
+                      'badge-solid-green': row.checkInStatus === 'CheckIn',
+                      'badge-solid-red': row.checkInStatus === 'CheckOut',
+                      'badge-solid-orange': row.checkInStatus === 'Cancelled'
                     }">
-                {{ row.booking_status }}
+                {{ row.checkInStatus }}
               </span>
             </mat-cell>
           </ng-container>

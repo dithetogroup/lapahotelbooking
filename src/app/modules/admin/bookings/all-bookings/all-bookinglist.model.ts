@@ -15,8 +15,10 @@ export class AllBookingslist {
   package_name: string;
   booking_status: string;
   payment_status: string;
+  checkInStatus: string;
   booking_state: string;
   room_name: string;
+  room_no: number;
 
   constructor(allBookings: Partial<AllBookingslist>) {
     this.id = allBookings.id ?? 0;
@@ -39,6 +41,8 @@ export class AllBookingslist {
     this.payment_status = allBookings.payment_status ?? '';
     this.booking_state = allBookings.booking_state ?? '';
     this.room_name = allBookings.room_name ?? '';
+    this.checkInStatus = allBookings.checkInStatus ?? '';
+    this.room_no = allBookings.room_no ?? 0;
   }
 }
 

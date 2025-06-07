@@ -25,6 +25,7 @@ $sql = "SELECT
     gd.booked_by,
     gb.booking_reference,
     gb.booking_status,
+    gb.checkInStatus,
     gb.payment_status,
     gb.booking_state,
     rt.room_name,

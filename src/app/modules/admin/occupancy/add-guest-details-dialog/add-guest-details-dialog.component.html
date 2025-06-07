@@ -119,9 +119,9 @@
             <div class="col-sm-6 m-b-24">
               <mat-form-field appearance="outline" class="w-100 full-width">
                 <mat-label>Check-In Date</mat-label>
-                <input matInput [matDatepicker]="picker1" formControlName="checkInDate" [min]="minCheckInDate">
-                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                <mat-datepicker #picker1></mat-datepicker>
+                <input matInput [matDatepicker]="picker1" formControlName="checkInDate" [min]="minCheckInDate" [matDatepickerFilter]="dateFilter">
+               <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+               <mat-datepicker #picker1></mat-datepicker>
                 <mat-error *ngIf="guestForm.get('checkInDate')?.hasError('required')">Check-In is required</mat-error>
               </mat-form-field>
             </div>
@@ -129,14 +129,16 @@
             <div class="col-sm-6 m-b-24">
               <mat-form-field appearance="outline" class="w-100 full-width">
                 <mat-label>Check-Out Date</mat-label>
-                <input matInput [matDatepicker]="picker2" formControlName="checkOutDate" [min]="minCheckOutDate">
+                <input matInput [matDatepicker]="picker2"  formControlName="checkOutDate" [min]="minCheckOutDate" [matDatepickerFilter]="dateFilter">
                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                 <mat-datepicker #picker2></mat-datepicker>
                 <mat-error *ngIf="guestForm.get('checkOutDate')?.hasError('required')">Check-Out is required</mat-error>
                 <mat-error *ngIf="guestForm.hasError('invalidDateRange')"> Check-Out date must be after Check-In
                   date.</mat-error>
               </mat-form-field>
+              <button mat-stroked-button color="primary" (click)="getBookedDatesForRoom()">Update Dates</button>
             </div>
+
 
             <!-- Room selection -->
             <div class="col-sm-12 m-b-24">
@@ -277,29 +279,7 @@
                 <input matInput [value]="'R' + totalAmountToPay" readonly>
               </mat-form-field>
             </div>
-
-
-            <!-- Booking Status -->
-            <!-- <div class="col-sm-6 m-b-24" *ngIf="paymentStatus === 'Paid'">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Booking Status</mat-label>
-              <mat-select formControlName="booking_status">
-                <mat-option value="CheckIn">CheckIn</mat-option>
-                <mat-option value="CheckOut">CheckOut</mat-option>
-                <mat-option value="Cancelled">Cancelled</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div> -->
-
             <div class="col-sm-6 m-b-24" *ngIf="guestForm.get('guestInfoGroup.guest_email')?.value">
-
-              <!-- <mat-form-field appearance="outline" class="w-100">
-                <mat-label>Send Invoice?</mat-label>
-                <mat-select formControlName="guest_invoice">
-                  <mat-option value="1">Yes</mat-option>
-                  <mat-option value="0">No</mat-option>
-                </mat-select>
-              </mat-form-field> -->
               <mat-checkbox formControlName="guest_invoice">Send Invoice</mat-checkbox>
             </div>
 

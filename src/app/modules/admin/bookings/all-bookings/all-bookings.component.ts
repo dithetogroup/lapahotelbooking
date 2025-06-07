@@ -81,7 +81,7 @@ export class AllBookingsComponent implements OnInit, OnDestroy {
     { def: 'checkOutDate', label: 'Check-Out', type: 'date', visible: true },
     { def: 'room_name', label: 'Room', visible: true },
     { def: 'package_name', label: 'Package Name', visible: true },
-    { def: 'booking_status', label: 'Status', type: 'status', visible: true },
+    { def: 'checkInStatus', label: 'Status', type: 'status', visible: true },
     { def: 'payment_status', label: 'Payment', type: 'payment', visible: true },
     { def: 'booking_reference', label: 'Booking Ref', visible: true },
     { def: 'booked_by', label: 'Booked By', visible: true },
@@ -202,7 +202,7 @@ export class AllBookingsComponent implements OnInit, OnDestroy {
         this.years = [...new Set(raw.map(r => new Date(r.checkInDate).getFullYear()))];
         this.dataSource.data = flatList;
 
-        console.log('data flat', this.dataSource.data);
+        console.log('data flating', this.dataSource.data);
         this.isLoading = false;
         this.refreshTable();
       },
@@ -211,10 +211,10 @@ export class AllBookingsComponent implements OnInit, OnDestroy {
   }
   
   toggleCheckStatus(row: BookingRow) {
-    const newStatus = row.booking_status === 'CheckIn' ? 'CheckOut' : 'CheckIn';
+    const newStatus = row.checkInStatus === 'CheckIn' ? 'CheckOut' : 'CheckIn';
     this.allBookingService.bookingStatus({booking_reference: row.booking_reference,status: newStatus}).subscribe({
       next: (res) => {
-        row.booking_status = newStatus;
+        row.checkInStatus = newStatus;
         const today = new Date().toISOString().split('T')[0];
         if (newStatus === 'CheckIn') row.checkInDate = today;
         else row.checkOutDate = today;

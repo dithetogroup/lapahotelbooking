@@ -72,6 +72,8 @@ export class AddGuestDetailsDialogComponent {
     price: number;
     nights: number;
   }[] = [];
+  bookedDateRanges: {start: Date, end: Date}[] = [];
+
   
   constructor(
     private fb: FormBuilder,
@@ -119,6 +121,16 @@ export class AddGuestDetailsDialogComponent {
     this.getPackages();
    // this.getOccupants();
     this.getAvailableRooms();
+
+
+    this.bookingForm.get('checkInDate')?.valueChanges.subscribe(() => {
+      this.checkSelectedDateRange();
+    });
+    this.bookingForm.get('checkOutDate')?.valueChanges.subscribe(() => {
+      this.checkSelectedDateRange();
+    });
+    
+
   //  console.log('ROOM Details', this.data);
     this.guestForm.get('bookingGroup.checkInDate')?.valueChanges.subscribe((checkIn) => {
       if (checkIn) {
@@ -129,7 +141,9 @@ export class AddGuestDetailsDialogComponent {
         }
       }
     });
-    
+
+
+  
     // Handle room selection
     this.guestForm.get('bookingGroup.roomNos')?.valueChanges.subscribe((selected: number[]) => {
       this.selectedRoomNos = [...new Set(selected)]; // deduplicate room numbers
@@ -179,7 +193,11 @@ export class AddGuestDetailsDialogComponent {
         this.guestForm.get('payment_types')?.updateValueAndValidity();
       }
     });
+
+    
   }
+
+
 
   onSubmit() {
     if (this.guestForm.valid) {
@@ -207,7 +225,7 @@ export class AddGuestDetailsDialogComponent {
         guest_invoice,
         bookingId: this.data.room.id,
         roomNo: this.data.room.roomNo,
-        booking_status: 'CheckIn',
+        booking_status: 'Booked',
         payment_status,
         payment_types: this.otherPaymentType || this.guestForm.get('payment_types')?.value
      //   otherPaymentType: this.showOtherPaymentInput ? this.otherPaymentType : null
@@ -224,7 +242,6 @@ export class AddGuestDetailsDialogComponent {
             this.dialogRef.close(); // close and pass value if needed
             // after success
             this.dialogRef.close('refresh');
-
             this.getAvailableRooms();
           //  location.reload();
           } else {
@@ -233,7 +250,9 @@ export class AddGuestDetailsDialogComponent {
           }
         },
         (error) => {
-          this.toastr.error('Booking failed.');
+          // If backend sends JSON with error message, show it
+          const errMsg = error?.error?.message || 'Booking failed.';
+          this.toastr.error(errMsg);
           this.loading = false;
         }
       );
@@ -450,6 +469,76 @@ getSelectedRoomDetails(): any[] {
   
     return dateArray;
   }
+
+
+  getBookedDatesForRoom() {
+    const roomNo = this.data.room.roomNo; // or however you get the selected room number
+    this.occupancyService.getRoomBookedDates(roomNo).subscribe(res => {
+      if (res.status === 'success') {
+        this.bookedDateRanges = res.data.map(range => ({
+          start: new Date(range.checkInDate),
+          end: new Date(range.checkOutDate)
+        }));
+        this.toastr.success("Booked dates Updated.");
+      } else {
+        this.bookedDateRanges = [];
+        this.toastr.error(res.message || "Could not load booked dates.");
+      }
+    }, err => {
+      this.bookedDateRanges = [];
+      this.toastr.error("Server error. Could not fetch booked dates.");
+    });
+  }
+
+
+  checkSelectedDateRange() {
+    //debugger;
+    const checkIn = this.bookingForm.get('checkInDate')?.value;
+    const checkOut = this.bookingForm.get('checkOutDate')?.value;
+  
+    if (!checkIn || !checkOut) return;
+  
+    // Convert to Date objects
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+  
+    // Loop through each booked range
+    const hasOverlap = this.bookedDateRanges.some(range => {
+      // If (selectedEnd > bookedStart) && (selectedStart < bookedEnd), there is an overlap
+      return (end > range.start) && (start < range.end);
+    });
+  
+    if (hasOverlap) {
+      this.toastr.error('Selected dates are already booked. Please choose different dates.');
+      // Optionally clear the invalid selection:
+      this.bookingForm.get('checkInDate')?.setValue('');
+      this.bookingForm.get('checkOutDate')?.setValue('');
+    }
+  }
+  
+  
+
+  onStepChange(event: any) {
+    // Step index 1 = Booking step (0-based index)
+    if (event.selectedIndex === 1) {
+
+      this.getBookedDatesForRoom();
+      console.log('we are within sept 2');
+    }
+  }
+  
+
+  dateFilter = (date: Date | null): boolean => {
+    if (!date) return false;
+    // True = selectable, False = disabled
+    // Disable dates that fall within any booked range
+    return !this.bookedDateRanges.some(range =>
+      date >= range.start && date < range.end // CheckIn is inclusive, CheckOut is exclusive
+    );
+  };
+  
+
+
   
   
   closeDialog(): void {

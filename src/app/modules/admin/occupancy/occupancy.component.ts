@@ -14,6 +14,20 @@
   import { AddGuestDetailsDialogComponent } from './add-guest-details-dialog/add-guest-details-dialog.component';
 import { MatSpinner } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+
+export const MY_DATE_FORMATS = {
+  parse: {
+    dateInput: 'D-MM-yyyy', // this is correct for NativeDateAdapter
+  },
+  display: {
+    dateInput: 'D-MM-yyyy', // this will show "07-06-2025"
+    monthYearLabel: 'MMM yyyy',
+    dateA11yLabel: 'dd-MM-yyyy',
+    monthYearA11yLabel: 'MMMM yyyy',
+  },
+};
 
   @Component({
       selector: 'app-occupancy',
@@ -30,9 +44,14 @@ import { MatInputModule } from '@angular/material/input';
           ReactiveFormsModule,
           NgIf,
           MatSpinner,
+          MatDatepickerModule
       ],
+      providers: [
+        { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS }
+      ],
+      
       templateUrl: './occupancy.component.html',
-      styleUrl: './occupancy.component.scss'
+      styleUrl: './occupancy.component.scss',
   })
   export class OccupancyComponent implements OnInit {
     occupancy: Occupancy[] = [];
@@ -43,7 +62,11 @@ import { MatInputModule } from '@angular/material/input';
     showOnlyGrouped: boolean = false;
     searchText: string = '';
     roomStats = { total: 0, occupied: 0, free: 0 };
+    startDate: Date | null = null;
+    endDate: Date | null = null;
 
+  
+    
     selectedStatus = '';
     selectedType = '';
     selectedBed = '';
@@ -63,7 +86,7 @@ import { MatInputModule } from '@angular/material/input';
 
     getOccupancy(){
       this.loading = true;
-      this.occupancyService.getOccupancyList().subscribe((data) => {
+      this.occupancyService.getOccupancyList(this.startDate, this.endDate).subscribe((data) => {
 
         // Deep clone the data to force reactivity
         const refreshedData = [...data.map(item => ({ ...item }))];
@@ -82,10 +105,22 @@ import { MatInputModule } from '@angular/material/input';
       });
     }
 
+    trackRoom(index: number, room: any) {
+      return room.roomId;
+    }
+    
 
     filterRooms(): void {
       this.filteredRooms = this.occupancy.filter((room) => {
-        const statusMatch = this.selectedStatus ? room.status === this.selectedStatus : true;
+        // Only filter by isAvailable if the user specifically selected a status filter
+        let statusMatch = true;
+        if (this.selectedStatus === 'Booked') {
+          statusMatch = room.isAvailable === false;
+        } else if (this.selectedStatus === 'Available') {
+          statusMatch = room.isAvailable === true;
+        }
+        // If selectedStatus is '', statusMatch is always true (show all rooms)
+    
         const typeMatch = this.selectedType ? room.roomType === this.selectedType : true;
         const bedMatch = this.selectedBed ? room.bedType === this.selectedBed : true;
         const groupMatch = this.showOnlyGrouped ? this.getGroupSize(room.bookingReference) > 1 : true;
@@ -100,15 +135,21 @@ import { MatInputModule } from '@angular/material/input';
             )
           : true;
     
+        // Remove manual dateRangeMatch logic! (your backend handles this with isAvailable)
+    
         return statusMatch && typeMatch && bedMatch && groupMatch && searchMatch;
       });
     }
+    
+    
     
     clearFilters(): void {
       this.selectedStatus = '';
       this.selectedType = '';
       this.selectedBed = '';
       this.searchText = '';
+      this.startDate = null;
+      this.endDate = null;
       this.filterRooms();
     }
     
@@ -149,7 +190,7 @@ import { MatInputModule } from '@angular/material/input';
       });
       dialogRef.afterClosed().subscribe((result) => {
         if (result) {
-          console.log('Guest Details Submitted:', result);
+        //  console.log('Guest Details Submitted:', result);
           this.getOccupancy();
           this.getRoomStats();
         }
@@ -159,11 +200,10 @@ import { MatInputModule } from '@angular/material/input';
     getRoomStats() {
       this.occupancyService.getRoomOccupancyCounts().subscribe({
         next: (res) => {
-          console.log('res', res);
           if (res && typeof res.total === 'number') {
             this.roomStats = res;
           }
-          
+
         },
         error: (err) => {
           console.error('Failed to fetch room stats:', err);

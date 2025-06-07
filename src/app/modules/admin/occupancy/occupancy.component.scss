@@ -54,3 +54,29 @@
   margin-left: 10px;
 }
 
+.second-row {
+  margin-top: 30px;
+  padding: 0;
+}
+
+
+.badge-available {
+  background: #43a047;
+  color: #fff;
+  // padding: 2px 10px;
+  // border-radius: 12px;
+  font-weight: 600;
+}
+.badge-booked {
+  background: #e53935;
+  color: #fff;
+  // padding: 2px 10px;
+  // border-radius: 12px;
+  font-weight: 600;
+}
+.disabled-link {
+  pointer-events: none;
+  color: #bbb !important;
+}
+
+

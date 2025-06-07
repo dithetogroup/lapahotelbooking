@@ -43,25 +43,32 @@
           "name": "add-booking",
           "type": "link",
           "permissions": {
-         "only": "ADMIN"
-      }
+            "only": "ADMIN"
+          }
         },
         {
           "route": "edit-booking",
           "name": "edit-booking",
           "type": "link",
           "permissions": {
-         "only": "ADMIN"
-      }
+              "only": "ADMIN"
+          }
         },
         {
           "route": "cancel-bookings",
           "name": "cancel-bookings",
           "type": "link"
+        },
+        {
+          "route": "bookings-invoices",
+          "name": "bookings-invoices",
+          "type": "link"
         }
       ]
      
     },
+
+    
     {
       "route": "rooms",
       "name": "rooms",

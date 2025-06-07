@@ -38,6 +38,7 @@ export interface Occupancy {
   bedTypeId: number;
   roomType: string;
   bedType: string;
+  isAvailable: boolean;
   roomTypeId: number;
   roomPrice: number;
   occupantsTypeId: number;

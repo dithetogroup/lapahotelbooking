@@ -1,0 +1,159 @@
+<app-page-header></app-page-header>
+
+<mat-card>
+  <mat-card-header>
+    <div class="table-header-toolbar">
+      <div class="row">
+        <div class="col-sm-4">
+          <span class="table-header"></span>
+          <mat-form-field appearance="outline" class="search-box">
+            <mat-label class="search-label">Search...</mat-label>
+            <input #filter (keyup)="applyFilter($event)" matInput type="text" />
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="date-filter-row d-flex align-items-center gap-2">
+
+            <mat-form-field appearance="outline" class="search-box">
+              <mat-label>Filter by Year</mat-label>
+              <mat-select [(ngModel)]="selectedYear" (selectionChange)="applyDateFilter()">
+                <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          
+            <mat-form-field appearance="outline" class="search-box" >
+              <mat-label>From</mat-label>
+              <input matInput [matDatepicker]="fromPicker" [(ngModel)]="dateFrom" (dateChange)="applyDateFilter()">
+              <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+              <mat-datepicker #fromPicker></mat-datepicker>
+            </mat-form-field>
+          
+            <mat-form-field appearance="outline" class="search-box">
+              <mat-label>To</mat-label>
+              <input matInput [matDatepicker]="toPicker" [(ngModel)]="dateTo" (dateChange)="applyDateFilter()">
+              <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+              <mat-datepicker #toPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        
+        </div>
+
+        <!-- <div class="col-sm-4">
+          <div class="right-side-btn">
+            <button mat-icon-button [hidden]="!selection.hasValue()" class="tbl-header-btn text-red"
+              matTooltip="Delete">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+            <button mat-icon-button class="text-indigo" (click)="select.open()" matTooltip="Show/Hide Column">
+              <mat-icon>filter_list</mat-icon>
+              <mat-select #select [(ngModel)]="filter.value" style="width: 200px; display: table;"
+                class="column-filter">
+                <span class="table-column-label">Show/Hide Column</span>
+                @for (cd of columnDefinitions; track cd; let i = $index) {
+                <mat-option>
+                  <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="cd.visible" color="primary">
+                    {{ cd.label }}
+                  </mat-checkbox>
+                </mat-option>
+                }
+              </mat-select>
+            </button>
+        
+            <button mat-icon-button (click)="resetDateFilters()" class="tbl-header-btn text-dark-grey" matTooltip="Refresh">
+              <mat-icon>refresh</mat-icon>
+            </button>
+            <button mat-icon-button (click)="exportExcel()" class="tbl-header-btn text-blue" matTooltip="Xlsx Download">
+              <mat-icon class="material-icons-outlined">file_download</mat-icon>
+            </button>
+
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="overflow-auto">
+      <div class="responsive_table">
+        <table mat-table [dataSource]="invoices" class="mat-elevation-z1" *ngIf="invoices.length">
+
+
+        <!-- Guest Name -->
+        <ng-container matColumnDef="guest_name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let inv">{{ inv.guest_name || '-' }}</td>
+            </ng-container>
+        
+            <!-- Guest Surname -->
+            <ng-container matColumnDef="guest_surname">
+            <th mat-header-cell *matHeaderCellDef>Surname</th>
+            <td mat-cell *matCellDef="let inv">{{ inv.guest_surname || '-' }}</td>
+            </ng-container>
+
+
+            <!-- Filename -->
+            <ng-container matColumnDef="filename">
+              <th mat-header-cell *matHeaderCellDef>Invoice Number</th>
+              <td mat-cell *matCellDef="let inv">{{ inv.filename }}</td>
+            </ng-container>
+        
+            <!-- Modified -->
+            <ng-container matColumnDef="modified">
+              <th mat-header-cell *matHeaderCellDef>Date Created</th>
+              <td mat-cell *matCellDef="let inv">{{ inv.modified }}</td>
+            </ng-container>
+
+
+            <!-- Email SENT -->
+            <ng-container matColumnDef="guest_invoice">
+            <th mat-header-cell *matHeaderCellDef>Email Sent</th>
+            <td mat-cell *matCellDef="let inv"> {{ inv.guest_invoice == 1 ? 'Yes' : 'No' }}</td>
+            </ng-container>
+
+
+            <!-- Email -->
+            <ng-container matColumnDef="guest_email">
+                <th mat-header-cell *matHeaderCellDef>Email</th>
+                <td mat-cell *matCellDef="let inv">{{ inv.guest_email || '-' }}</td>
+            </ng-container>
+            
+            <!-- Booked By -->
+            <ng-container matColumnDef="booked_by">
+                <th mat-header-cell *matHeaderCellDef>Booked By</th>
+                <td mat-cell *matCellDef="let inv">{{ inv.booked_by || '-' }}</td>
+            </ng-container>
+
+            <!-- Download -->
+            <ng-container matColumnDef="download">
+              <th mat-header-cell *matHeaderCellDef>Download</th>
+              <td mat-cell *matCellDef="let inv">
+                <button mat-stroked-button color="primary" (click)="download(inv.url, inv.filename)">
+                  Download
+                </button>
+              </td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <div *ngIf="!invoices.length">No invoices found.</div>
+      </div>
+
+      <!-- Spinner -->
+      <div class="tbl-spinner" *ngIf="isLoading">
+        <mat-progress-spinner color="primary" [diameter]="40" mode="indeterminate"></mat-progress-spinner>
+      </div>
+
+      <!-- No results -->
+      <div class="no-results" *ngIf="!isLoading && dataSource.data.length === 0">
+        No results
+      </div>
+
+      <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+    </div>
+  </mat-card-content>
+</mat-card>
