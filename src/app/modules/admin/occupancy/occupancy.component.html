@@ -2,8 +2,9 @@
 <div class="container m-t-3">
   <!-- Filter Section -->
   <div class="filterBody">
-    <div class="row">
-      <div class="col-md-2">
+    <div class="row m-b-20">
+
+      <div class="col-md-3">
         <mat-form-field class="example-full-width advance-search" appearance="outline" subscriptSizing="dynamic">
           <mat-label>Status:</mat-label>
           <mat-select id="status" [(ngModel)]="selectedStatus" (selectionChange)="filterRooms()">
@@ -14,7 +15,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-3">
         <mat-form-field class="example-full-width advance-search" appearance="outline" subscriptSizing="dynamic">
           <mat-label>Room Type:</mat-label>
           <mat-select id="type" [(ngModel)]="selectedType" (selectionChange)="filterRooms()">
@@ -37,16 +38,6 @@
         </mat-form-field>
       </div>
 
-      <div class="col-md-3">
-        <mat-form-field appearance="outline" class="search-box">
-          <mat-label class="search-label">Search...</mat-label>
-          <input matInput [(ngModel)]="searchText" (keyup)="filterRooms()" placeholder="Search...">
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-
-
-      </div>
-
       <div class="col-md-2 d-flex align-items-end">
         <button mat-flat-button color="primary" (click)="clearFilters()" class="clearbtn m-r-20">Clear</button>
         <button mat-flat-button color="accent" (click)="toggleGroupedFilter()" class="groupby">
@@ -56,9 +47,34 @@
           <mat-icon>refresh</mat-icon>
         </button>
       </div>
-    </div>
-  </div>
 
+      <div class="col-md-3 second-row">
+        <mat-form-field appearance="outline" class="search-box">
+          <mat-label>Available Rooms</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Start date" [(ngModel)]="startDate" name="startDate" (dateChange)="getOccupancy()">
+            <input matEndDate placeholder="End date" [(ngModel)]="endDate" name="endDate" (dateChange)="getOccupancy()">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+        <!-- <button mat-flat-button color="primary" (click)="applyDateFilter()">Apply</button> -->
+
+      </div>
+
+      <div class="col-md-3 second-row">
+        <mat-form-field appearance="outline" class="search-box">
+          <mat-label class="search-label">Search...</mat-label>
+          <input matInput [(ngModel)]="searchText" (keyup)="filterRooms()" placeholder="Search...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+
+      </div>
+  
+    </div>
+
+<!-- 
   <div class="room-summary row m-b-20">
     <div class="col-md-4">
       <mat-card class="summary-card bg-green text-center">
@@ -78,53 +94,50 @@
         <h3>{{ roomStats.free }}</h3>
       </mat-card>
     </div>
-  </div>
+  </div> -->
   
 
   <!-- Room Cards Section -->
   <div class="row">
     <mat-spinner *ngIf="loading"></mat-spinner>
-    @for (room of filteredRooms; track room) {
-    <div class="col-md-2 col-lg-2">
-      <div class="room-card">
-        <div class="card-body">
-          <div class="roomCard">
-            <div class="top-block d-flex align-items-center justify-content-between">
-              <h3 class="m-0 f-w-500">Room</h3>
-              <div
-                [ngClass]="{'badge-solid-orange': room.status === 'Booked', 'badge-solid-green': room.status !== 'Booked'}"
-                class="room-badge badge">
-                {{ room.status }}
+    <ng-container *ngFor="let room of filteredRooms; trackBy: trackRoom">
+      <div class="col-md-2 col-lg-2">
+        <div class="room-card">
+          <div class="card-body">
+            <div class="roomCard">
+              <div class="top-block d-flex align-items-center justify-content-between">
+                <h3 class="m-0 f-w-500">Room</h3>
+                <span
+                  class="room-badge badge"
+                  [ngClass]="room.isAvailable ? 'badge-available' : 'badge-booked'">
+                  {{ room.isAvailable ? 'Available' : 'Booked' }}
+                </span>
               </div>
-            </div>
-            <div class="price">
-              <small class="text-muted m-t-8 d-inline-block price">R{{ room.weekPrice }}</small>
-            </div>
-           
-            <h2 class="m-0 f-s-24">{{ room.roomNo }}</h2>
-            <div class="room-details">
-              <h3 class="room-type">{{ room.roomType }}</h3>
-              <small class="text-muted m-t-8 d-inline-block w-full">{{ room.bedType }}</small>
-
-              <!-- <small class="text-muted m-t-8 d-inline-block w-full">
-                {{ room.guestDetails ? 'Guest Added' : 'No Guest' }}
-              </small> -->
-              <span class="group-badge" *ngIf="getGroupSize(room.bookingReference) > 1">
-                Part of {{ getGroupSize(room.bookingReference) }} rooms
-              </span>
-     
-            </div>
-            <div class="roomCard-footer">
-              <a class="f-s-12" [ngClass]="{'disabled-link': room.status === 'Available'}"
-                (click)="room.status === 'Booked' ? openGuestDetailsDialog(room) : openAddGuestDetailsDialog(room)">
-                {{ room.status === 'Booked' ? 'Guest Details' : 'Add Guest' }}
-              </a>
+              <div class="price">
+                <small class="text-muted m-t-8 d-inline-block price">R{{ room.weekPrice }}</small>
+              </div>
+              <h2 class="m-0 f-s-24">{{ room.roomNo }}</h2>
+              <div class="room-details">
+                <h3 class="room-type">{{ room.roomType }}</h3>
+                <small class="text-muted m-t-8 d-inline-block w-full">{{ room.bedType }}</small>
+                <span class="group-badge" *ngIf="getGroupSize(room.bookingReference) > 1">
+                  Part of {{ getGroupSize(room.bookingReference) }} rooms
+                </span>
+              </div>
+              <div class="roomCard-footer">
+                <a class="f-s-12"
+                   [ngClass]="{'disabled-link': !room.isAvailable}"
+                   (click)="room.isAvailable ? openAddGuestDetailsDialog(room) : openGuestDetailsDialog(room)">
+                  {{ room.isAvailable ? 'Add Guest' : 'Guest Details' }}
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    }
+    </ng-container>
   </div>
+  
+  
 
 </div>

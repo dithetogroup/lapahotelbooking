@@ -28,7 +28,10 @@ $special_requests = trim($data['special_requests'] ?? '');
 
 $checkInDate = trim($data['checkInDate'] ?? '');
 $checkOutDate = trim($data['checkOutDate'] ?? '');
-$bookingStatus = trim($data['booking_status'] ?? 'Booked');
+$bookingStatus = "Booked";
+$checkInStatus = "CheckIn";
+
+
 $paymentStatus = trim($data['payment_status'] ?? '');
 $paymentTypes = trim($data['payment_types'] ?? '');
 $paymentAmount = trim($data['payment_amount'] ?? 0);
@@ -53,6 +56,51 @@ try {
     $roomTypeNames = [];
     $roomPrices = [];
     foreach ($allRoomNos as $roomNo) {
+
+
+
+      // 1. Fetch roomId first!
+      $roomQuery = $mysqli->prepare("SELECT r.id, r.room_type_id, rt.room_name, rt.week_price FROM rooms r JOIN room_types rt ON r.room_type_id = rt.id WHERE r.room_no = ?");
+      $roomQuery->bind_param("s", $roomNo);
+      $roomQuery->execute();
+      $roomResult = $roomQuery->get_result();
+      if ($row = $roomResult->fetch_assoc()) {
+          $roomId = $row['id'];
+          $roomTypeNames[] = $row['room_name'] ?? 'N/A';
+          $roomPrices[] = (float)$row['week_price'];
+      } else {
+          throw new Exception("Room not found: $roomNo");
+      }
+      $roomQuery->close();
+  
+      // 2. NOW do overlap check for this roomId and the date range
+      $overlapSql = "SELECT COUNT(*) FROM guest_bookings
+          WHERE room_id = ?
+            AND booking_status = 'Booked'
+            AND (
+                  (? < checkOutDate) AND
+                  (? > checkInDate)
+                )";
+      $overlapStmt = $mysqli->prepare($overlapSql);
+      $overlapStmt->bind_param("iss", $roomId, $checkInDate, $checkOutDate);
+      $overlapStmt->execute();
+      $overlapStmt->bind_result($count);
+      $overlapStmt->fetch();
+      $overlapStmt->close();
+  
+      if ($count > 0) {
+          // Already booked!
+          $mysqli->rollback();
+          error_log("[ERROR] Room $roomNo is already booked for selected dates: $checkInDate to $checkOutDate");
+          http_response_code(409);
+          echo json_encode([
+              "status" => "error",
+              "message" => "Room $roomNo is already booked for the selected dates."
+          ]);
+          exit();
+      }
+
+
         $roomQuery = $mysqli->prepare("SELECT r.id, r.room_type_id, rt.room_name, rt.week_price FROM rooms r JOIN room_types rt ON r.room_type_id = rt.id WHERE r.room_no = ?");
         $roomQuery->bind_param("s", $roomNo);
         $roomQuery->execute();
@@ -67,8 +115,8 @@ try {
         $roomQuery->close();
 
         error_log("[INFO] INSERTING Bookings ROOM ID: $roomId...");
-        $insertBooking = $mysqli->prepare("INSERT INTO guest_bookings (room_id, checkInDate, checkOutDate, booking_state, booking_status, payment_types, payment_status, booking_reference, payment_amount) VALUES (?, ?, ?, 'Confirmed', ?, ?, ?, ?, ?)");
-        $insertBooking->bind_param("issssssd", $roomId, $checkInDate, $checkOutDate, $bookingStatus, $paymentTypes, $paymentStatus, $bookingReference, $paymentAmount);
+        $insertBooking = $mysqli->prepare("INSERT INTO guest_bookings (room_id, checkInDate, checkOutDate, booking_state, booking_status, payment_types, payment_status, booking_reference, payment_amount, checkInStatus) VALUES (?, ?, ?, 'Confirmed', ?, ?, ?, ?, ?, ?)");
+        $insertBooking->bind_param("issssssds", $roomId, $checkInDate, $checkOutDate, $bookingStatus, $paymentTypes, $paymentStatus, $bookingReference, $paymentAmount, $checkInStatus);
         $insertBooking->execute();
         $bookingId = $insertBooking->insert_id;
         $insertBooking->close();
@@ -84,10 +132,10 @@ try {
             $insertPkg->close();
         }
 
-        $updateRoom = $mysqli->prepare("UPDATE rooms SET booking_status = 1 WHERE id = ?");
-        $updateRoom->bind_param("i", $roomId);
-        $updateRoom->execute();
-        $updateRoom->close();
+        // $updateRoom = $mysqli->prepare("UPDATE rooms SET booking_status = 1 WHERE id = ?");
+        // $updateRoom->bind_param("i", $roomId);
+        // $updateRoom->execute();
+        // $updateRoom->close();
     }
 
     if ($firstBookingId !== null) {

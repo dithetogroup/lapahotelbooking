@@ -2,8 +2,8 @@
     -- Drop child tables first
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS cancelled_rooms;
 DROP TABLE IF EXISTS guest_details;
+DROP TABLE IF EXISTS cancelled_rooms;
 DROP TABLE IF EXISTS booking_packages;
 DROP TABLE IF EXISTS guest_bookings;
 DROP TABLE IF EXISTS packages;
@@ -14,8 +14,6 @@ DROP TABLE IF EXISTS room_details;
 DROP TABLE IF EXISTS users;
 
 SET FOREIGN_KEY_CHECKS = 1;
-
-
 
     -- Bed Types
     CREATE TABLE bed_types (
@@ -95,6 +93,7 @@ SET FOREIGN_KEY_CHECKS = 1;
         checkOutDate DATE,
         booking_state VARCHAR(20),
         booking_status VARCHAR(20),
+        checkInStatus VARCHAR(20),
         payment_types VARCHAR(20),
         payment_status VARCHAR(20),
         payment_amount DECIMAL(10,2),
@@ -154,22 +153,3 @@ SET FOREIGN_KEY_CHECKS = 1;
         cancelled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (room_id) REFERENCES rooms(id)
     );
-
-
-
-    SET FOREIGN_KEY_CHECKS = 0;
-
-    -- Delete from child tables first
-    DELETE FROM guest_details;
-    DELETE FROM booking_packages;
-    DELETE FROM guest_bookings;
-
-    -- Then delete from base tables
-    DELETE FROM room_details;
-    DELETE FROM rooms;
-    DELETE FROM room_types;
-    DELETE FROM bed_types;
-    DELETE FROM cancelled_rooms;
-
-    SET FOREIGN_KEY_CHECKS = 1;
-

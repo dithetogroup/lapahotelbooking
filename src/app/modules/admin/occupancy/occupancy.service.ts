@@ -18,12 +18,26 @@ export class OccupancyService {
     return this.http.get<Occupancy[]>(this.apiUrl);
   }
 
-  getOccupancyList(): Observable<Occupancy[]> {
+  getOccupancyList(startDate?: Date | null, endDate?: Date | null): Observable<Occupancy[]> {
+    let params: any = {};
+    if (startDate && endDate) {
+      params.startDate = startDate.toISOString().slice(0, 10);
+      params.endDate = endDate.toISOString().slice(0, 10);
+    }
   return this.http.get<{ status: string; data: Occupancy[] }>(this.baseUrl + this.urlEndPoints.getoccupancy)
     .pipe(map((response) => {
       return response.data; 
     }));
   }
+
+
+  getRoomBookedDates(roomNo: any) {
+    const url = `${this.baseUrl + this.urlEndPoints.getRoomBookedDates}?roomNo=${encodeURIComponent(roomNo)}`;
+    return this.http.get<{status: string, data: {checkInDate: string, checkOutDate: string}[], message?: string}>(url);
+
+  }
+  
+  
 
   getRoomOccupancyCounts(): Observable<any> {
     return this.http.get<any>(this.baseUrl + this.urlEndPoints.getRoomOccupancyCounts)
