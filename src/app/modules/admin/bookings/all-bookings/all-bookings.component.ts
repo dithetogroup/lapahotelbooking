@@ -202,7 +202,7 @@ export class AllBookingsComponent implements OnInit, OnDestroy {
         this.years = [...new Set(raw.map(r => new Date(r.checkInDate).getFullYear()))];
         this.dataSource.data = flatList;
 
-        console.log('data flat', this.dataSource.data);
+        console.log('data flating', this.dataSource.data);
         this.isLoading = false;
         this.refreshTable();
       },

@@ -126,10 +126,10 @@
               </div>
               <div class="roomCard-footer">
                 <a class="f-s-12"
-                   [ngClass]="{'disabled-link': !room.isAvailable}"
-                   (click)="room.isAvailable ? openAddGuestDetailsDialog(room) : openGuestDetailsDialog(room)">
-                  {{ room.isAvailable ? 'Add Guest' : 'Guest Details' }}
-                </a>
+                [ngClass]="{'disabled-link': room.isAvailable === false && !room.guestDetails}" 
+                (click)="room.isAvailable ? openAddGuestDetailsDialog(room) : openGuestDetailsDialog(room)">
+               {{ room.isAvailable ? 'Add Guest' : 'Guest Details' }}
+             </a>
               </div>
             </div>
           </div>

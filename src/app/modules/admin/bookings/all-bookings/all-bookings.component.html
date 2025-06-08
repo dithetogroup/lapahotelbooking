@@ -109,7 +109,7 @@
 
           <ng-container matColumnDef="room_name">
             <mat-header-cell *matHeaderCellDef>Room</mat-header-cell>
-            <mat-cell *matCellDef="let row">{{ row.room_name }}</mat-cell>
+            <mat-cell *matCellDef="let row">{{row.room_no}} - {{ row.room_name }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="package_name">

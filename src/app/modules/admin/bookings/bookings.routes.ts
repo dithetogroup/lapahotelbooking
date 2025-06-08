@@ -4,6 +4,7 @@ import { AddBookingComponent } from './add-booking/add-booking.component';
 import { EditBookingComponent } from './edit-booking/edit-booking.component';
 import { AllBookingsComponent } from './all-bookings/all-bookings.component';
 import { CancelledBookingsComponent } from './cancel-bookings/cancel-bookings.component';
+import { BookingInvoicesComponent } from './booking-invoices/booking-invoices.component';
 
 export const BOOKINGS_ROUTE: Route[] = [
   {
@@ -26,6 +27,10 @@ export const BOOKINGS_ROUTE: Route[] = [
   {
     path: 'cancel-bookings',
     component: CancelledBookingsComponent,
+  },
+  {
+    path: 'bookings-invoices',
+    component: BookingInvoicesComponent,
   },
   { path: '**', component: Page404Component },
 ];
