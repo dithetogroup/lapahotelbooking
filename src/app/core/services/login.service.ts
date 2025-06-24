@@ -6,6 +6,7 @@ import { User } from '@core/models/interface';
 import { Observable, of, throwError } from 'rxjs';
 import { JWT } from './JWT';
 import { LocalStorageService } from '@shared';
+import { environment } from '@env/environment';
 const jwt = new JWT();
 
 @Injectable({
@@ -13,9 +14,15 @@ const jwt = new JWT();
 })
 export class LoginService {
   private users: User[] = [];
+    private baseUrl = environment.baseUrl;
+    private urlEndPoints = environment.urlEndPoints;
+
+
+    
   constructor(protected http: HttpClient, private store: LocalStorageService) {
     this.loadUsers();
   }
+
   private loadUsers() {
     this.http.get<User[]>('assets/data/users.json?_t=' + Date.now()).subscribe(
       (response: User[]) => {
@@ -28,6 +35,13 @@ export class LoginService {
       }
     );
   }
+
+
+  loginUser(username: string, password: string): Observable<any> {
+
+    return this.http.post<any>(this.baseUrl + this.urlEndPoints.loginUser, { username, password });
+  }
+
 
   login(username: string, password: string, rememberMe = false) {
     // Simulate a login API call
@@ -82,6 +96,7 @@ export class LoginService {
   user() {
     return this.http.get<User>('/user');
   }
+  
   menu(): Observable<Menu[]> {
     return this.http
       .get<{ menu: Menu[] }>('assets/data/menu.json?_t=' + Date.now())

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -15,7 +15,7 @@ import { CommonModule, NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OccupancyService } from '../occupancy.service';
 import { ToastrService } from 'ngx-toastr';
-import { first } from 'rxjs';
+import { debounceTime, first, tap } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -25,6 +25,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { CancelBookingDialogComponent } from '../cancel-booking-dialog/cancel-booking-dialog.component';
+import { User } from '@core/models/interface';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
     selector: 'app-guest-details-dialog',
@@ -58,6 +60,7 @@ export class GuestDetailsDialogComponent implements OnInit{
   packages: any[] = [];
   showCancelForm = false;
   cancellationReason = '';
+  user!: User;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { room: Occupancy },
@@ -67,6 +70,8 @@ export class GuestDetailsDialogComponent implements OnInit{
     private occupancyService: OccupancyService,
     private toastr: ToastrService,
     private bottomSheet: MatBottomSheet,
+    private cdr: ChangeDetectorRef,
+     private auth: AuthService,
 
     
   ) {
@@ -94,8 +99,14 @@ export class GuestDetailsDialogComponent implements OnInit{
 
 
   ngOnInit(): void {
-    this.loadPackages();
 
+    this.auth.user().pipe(
+      tap((user) => (this.user = user)),
+      debounceTime(10)
+    )
+    .subscribe(() => this.cdr.detectChanges());
+
+    this.loadPackages();
     const guest = this.roomData.guestDetails;
   
     this.guestForm.patchValue({
@@ -197,9 +208,11 @@ export class GuestDetailsDialogComponent implements OnInit{
       const payload = {
         booking_reference: this.data.room.guestDetails?.reservationInfo?.bookingReference,
         cancellation_reason: reasonText,
-        refund_status: refundStatus
+        refund_status: refundStatus,
+        cancelled_by: this.user['full_name'],
       };
       
+      debugger;
       this.occupancyService.cancelBooking(payload).pipe(first()).subscribe(
         (res) => {
           if (res.status === 'success') {

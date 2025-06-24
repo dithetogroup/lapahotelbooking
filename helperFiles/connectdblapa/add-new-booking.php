@@ -36,8 +36,7 @@ $paymentStatus = trim($data['payment_status'] ?? '');
 $paymentTypes = trim($data['payment_types'] ?? '');
 $paymentAmount = trim($data['payment_amount'] ?? 0);
 $guestInvoice = (int)($data['guest_invoice'] ?? 0);
-$bookedBy = isset($data['booked_by']) ? trim($data['booked_by']) : 'Lethabo';
-
+$bookedBy = trim($data['booked_by'] ?? '');
 
 $allRoomNos = array_merge([$mainRoomNo], $roomNos);
 

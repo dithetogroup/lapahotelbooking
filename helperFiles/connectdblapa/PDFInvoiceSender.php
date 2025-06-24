@@ -10,7 +10,7 @@ function sendStyledPDFInvoiceWithAttachment(string $guestEmail, string $adminEma
 
 
     $invoiceTemplatePath = __DIR__ . "/email_templates/invoice_template.html";
-    $outputPdfPath = __DIR__ . "/invoices/invoice_{$invoiceNo}.pdf";
+    $outputPdfPath = __DIR__ . "/invoices/{$invoiceNo}.pdf";
 
     if (!file_exists($invoiceTemplatePath)) {
         error_log("[ERROR] Invoice template not found at $invoiceTemplatePath");
