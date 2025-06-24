@@ -30,12 +30,26 @@ export class AuthService {
     private store: LocalStorageService
   ) {
     this.user$ = new BehaviorSubject<User>(this.store.get('currentUser'));
+    this.restoreSession();
   }
 
   init() {
     return new Promise<void>((resolve) =>
       this.change$.subscribe(() => resolve())
     );
+  }
+
+  restoreSession() {
+    const token = this.tokenService.getToken();
+    if (token && token.valid && token.valid()) {
+      const savedUser = this.store.get('currentUser');
+      if (savedUser) {
+        this.user$.next(savedUser);
+      }
+    } else {
+      this.user$.next({});
+      this.store.remove('currentUser');
+    }
   }
 
   change() {

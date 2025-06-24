@@ -32,6 +32,9 @@ import { ViewDeletedRoomsModalComponent } from '../cancel-bookings/dialogs/view-
 import { BookingInvoices } from './booking-invoices.model';
 import { BookingInvoicesService } from './booking-invoices.service';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { environment } from '@env/environment';
+//import { environment } from 'src/environments/environment';
+
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -166,16 +169,20 @@ export class BookingInvoicesComponent implements OnInit{
     this.applyDateFilter();
   }
 
-  download(url: string, filename: string) {
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
 
+download(url: string, filename: string) {
+  const fullUrl = url.startsWith('http')
+    ? url
+    : `${environment.baseUrl}${url}`;
+  const link = document.createElement('a');
+  link.href = fullUrl;
+  link.download = filename;
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+  
  
 }
 

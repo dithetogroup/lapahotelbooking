@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { share } from 'rxjs/operators';
@@ -37,9 +38,27 @@ export interface Menu {
 export class MenuService {
   private menu$: BehaviorSubject<Menu[]> = new BehaviorSubject<Menu[]>([]);
 
+  constructor(private http: HttpClient) {} // <-- Inject HttpClient
+
+
   /** Get all the menu data. */
   getAll(): Observable<Menu[]> {
     return this.menu$.asObservable();
+  }
+
+
+  /** Load menu from assets/data/menu.json */
+  loadMenu(): void {
+    this.http.get<{ menu: Menu[] }>('assets/data/menu.json?_t=' + Date.now())
+      .subscribe({
+        next: (res) => {
+          this.set(res.menu);
+        },
+        error: (err) => {
+          console.error('Failed to load menu.json', err);
+          this.reset();
+        }
+      });
   }
 
   /** Observe the change of menu data. */

@@ -23,19 +23,19 @@
     },
     {
       "route": "occupancy",
-      "name": "occupancy",
+      "name": "Occupancy",
       "type": "link",
       "icon": "assignment"
     },
     {
       "route": "bookings",
-      "name": "bookings",
+      "name": "Bookings",
       "type": "sub",
       "icon": "book-open",
       "children": [
         {
           "route": "all-bookings",
-          "name": "all-bookings",
+          "name": "All Bookings",
           "type": "link"
         },
         {
@@ -56,19 +56,17 @@
         },
         {
           "route": "cancel-bookings",
-          "name": "cancel-bookings",
+          "name": "Cancel Bookings",
           "type": "link"
         },
         {
           "route": "bookings-invoices",
-          "name": "bookings-invoices",
+          "name": "Bookings Invoices",
           "type": "link"
         }
       ]
      
     },
-
-    
     {
       "route": "rooms",
       "name": "rooms",

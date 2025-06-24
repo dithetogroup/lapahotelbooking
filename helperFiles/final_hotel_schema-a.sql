@@ -2,18 +2,26 @@
     -- Drop child tables first
 SET FOREIGN_KEY_CHECKS = 0;
 
+-- Child-most
 DROP TABLE IF EXISTS guest_details;
 DROP TABLE IF EXISTS cancelled_rooms;
 DROP TABLE IF EXISTS booking_packages;
 DROP TABLE IF EXISTS guest_bookings;
-DROP TABLE IF EXISTS packages;
+DROP TABLE IF EXISTS room_details;
 DROP TABLE IF EXISTS rooms;
 DROP TABLE IF EXISTS room_types;
 DROP TABLE IF EXISTS bed_types;
-DROP TABLE IF EXISTS room_details;
+DROP TABLE IF EXISTS packages;
+
+-- RBAC relationships
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS role_permissions;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS permissions;
 DROP TABLE IF EXISTS users;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
 
     -- Bed Types
     CREATE TABLE bed_types (
@@ -72,17 +80,42 @@ SET FOREIGN_KEY_CHECKS = 1;
     -- Users
     CREATE TABLE users (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        user_name VARCHAR(100),
-        user_surname VARCHAR(100),
-        user_email VARCHAR(100) UNIQUE,
-        user_password VARCHAR(100),
-        user_role VARCHAR(20),
-        user_role_priority INT,
-        user_permissions TEXT,
-        user_avatar VARCHAR(255),
+        username VARCHAR(50) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,        -- Use password_hash when saving!
+        full_name VARCHAR(100),
+        surname VARCHAR(100),
+        email VARCHAR(255) NOT NULL UNIQUE,
         user_lastlogin TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- Roles
+    CREATE TABLE roles (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(50) NOT NULL UNIQUE,
+        priority INT DEFAULT 0
+    );
+
+    CREATE TABLE user_roles (
+        user_id INT NOT NULL,
+        role_id INT NOT NULL,
+        PRIMARY KEY(user_id, role_id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE permissions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL UNIQUE
+    );
+
+
+    CREATE TABLE role_permissions (
+        role_id INT NOT NULL,
+        permission_id INT NOT NULL,
+        PRIMARY KEY(role_id, permission_id),
+        FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+        FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE
     );
 
     -- Guest Bookings

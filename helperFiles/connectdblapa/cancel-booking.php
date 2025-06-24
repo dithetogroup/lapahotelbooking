@@ -21,7 +21,7 @@ if (!$data) {
 $bookingRef = isset($data['booking_reference']) ? trim($data['booking_reference']) : '';
 $reason = isset($data['cancellation_reason']) ? trim($data['cancellation_reason']) : '';
 $refund = isset($data['refund_status']) ? trim($data['refund_status']) : '';
-$cancelledBy = isset($data['cancelled_by']) ? trim($data['cancelled_by']) : 'system';
+$cancelledBy = isset($data['cancelled_by']) ? trim($data['cancelled_by']) : '';
 
 if (empty($bookingRef) || empty($reason)) {
     error_log("[ERROR] Missing booking_reference or cancellation_reason.");
@@ -163,21 +163,21 @@ while ($row = $result->fetch_assoc()) {
 $stmt->close();
 
 // Update room availability
-foreach ($roomIds as $rid) {
-    $update = $mysqli->prepare("UPDATE rooms SET booking_status = 0 WHERE id = ?");
-    if (!$update) {
-        error_log("[ERROR] Failed to prepare update for room $rid: " . $mysqli->error);
-        continue;
-    }
+// foreach ($roomIds as $rid) {
+//     $update = $mysqli->prepare("UPDATE rooms SET booking_status = 0 WHERE id = ?");
+//     if (!$update) {
+//         error_log("[ERROR] Failed to prepare update for room $rid: " . $mysqli->error);
+//         continue;
+//     }
 
-    $update->bind_param("i", $rid);
-    if (!$update->execute()) {
-        error_log("[WARNING] Failed to update booking_status for room $rid: " . $update->error);
-    } else {
-        error_log("[INFO] Room $rid marked as available.");
-    }
-    $update->close();
-}
+//     $update->bind_param("i", $rid);
+//     if (!$update->execute()) {
+//         error_log("[WARNING] Failed to update booking_status for room $rid: " . $update->error);
+//     } else {
+//         error_log("[INFO] Room $rid marked as available.");
+//     }
+//     $update->close();
+// }
 
 if ($cancelled > 0) {
     error_log("[INFO] Successfully cancelled $cancelled booking(s) for reference $bookingRef.");

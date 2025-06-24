@@ -7,6 +7,7 @@ import {
   Renderer2,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { StartupService } from '@core/services/startup.service';
 
 @Component({
     selector: 'app-root',
@@ -18,8 +19,12 @@ import { RouterModule } from '@angular/router';
 export class AppComponent implements AfterViewInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
-    private renderer: Renderer2
-  ) {}
+    private renderer: Renderer2,
+    private startupService: StartupService
+  ) {
+    this.startupService.load();
+
+  }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {

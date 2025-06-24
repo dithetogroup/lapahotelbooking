@@ -125,4 +125,9 @@ export class TokenService implements OnDestroy {
   public set permissionArray(value: string[]) {
     this._permissionArray = value;
   }
+
+  public getToken(): BaseToken | undefined {
+    return this.token;
+  }
+  
 }

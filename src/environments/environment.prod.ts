@@ -18,6 +18,8 @@ export const environment = {
     getCanceledBookingsLists: '/get-canceled-rooms.php',
     updateBookingStatus: '/update-refund-status.php',
     getRoomBookedDates: '/get-room-booked-dates.php',
-    getAllBookingInvoices: '/get-booking-invoices.php'
+    getAllBookingInvoices: '/get-booking-invoices.php',
+    loginUser: '/login.php',    
+    logoutUser: '/logout.php'
   }
 };

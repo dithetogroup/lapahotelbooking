@@ -13,3 +13,17 @@
     fill: rgba(75, 75, 90, 0.1215686275) !important;
   }
 }
+
+.initials-avatar {
+  width: 32px;
+  height: 32px;
+  background: #6772e5;
+  color: #fff;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+

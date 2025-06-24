@@ -188,3 +188,47 @@ INSERT INTO room_details (bed_type_id, room_details_list) VALUES (1, '2 Adults 1
     ('Morning Hike', 400.00),
     ('None', 0.00);
 
+-- 1. Add Users
+INSERT INTO users (id, username, password, full_name, surname, email)
+VALUES
+  (1, 'jason',  '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Mathipa', 'Makgato',  'jason@example.com'),
+  (2, 'boni',   '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Boni',    'Dikgale',  'lebo@example.com'),
+  (3, 'thakgi', '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Thakgi',  'Dikgale',  'thakgi@example.com'),
+  (4, 'ranti',  '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Ranti',   'Dikgale',  'ranti@example.com');
+
+-- 2. Add Roles
+INSERT INTO roles (id, name, priority)
+VALUES
+  (1, 'ADMIN', 1),
+  (2, 'EMPLOYEE', 2);
+
+-- 3. Assign Users to Roles
+INSERT INTO user_roles (user_id, role_id) VALUES
+  (1, 1), -- Jason as ADMIN
+  (1, 2), -- Jason as EMPLOYEE
+  (2, 2), -- Boni as EMPLOYEE
+  (3, 2), -- Thakgi as EMPLOYEE
+  (4, 1); -- Ranti as ADMIN
+
+-- 4. Add Permissions
+INSERT INTO permissions (id, name) VALUES
+  (1, 'VIEW_DASHBOARD'),
+  (2, 'EDIT_PROFILE'),
+  (3, 'canAdd'),
+  (4, 'canEdit'),
+  (5, 'canRead');
+
+-- 5. Assign Permissions to Roles
+INSERT INTO role_permissions (role_id, permission_id) VALUES
+  (1, 1),
+  (1, 2),
+  (1, 3),
+  (1, 4),
+  (1, 5),
+  (2, 1),
+  (2, 3),
+  (2, 4),
+  (2, 5);
+
+
+

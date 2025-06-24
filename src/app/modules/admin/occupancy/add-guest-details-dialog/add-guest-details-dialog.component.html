@@ -287,7 +287,18 @@
 
           <div class="d-flex justify-content-between">
             <button mat-stroked-button matStepperPrevious>Back</button>
-            <button mat-stroked-button color="primary" type="submit" [disabled]="!guestForm.valid">Submit</button>
+
+
+
+            <button mat-stroked-button color="primary" type="submit" [disabled]="!guestForm.valid || loading">
+              <ng-container *ngIf="!loading; else btnSpinner">Submit</ng-container>
+              <ng-template #btnSpinner>
+                <mat-spinner diameter="24"></mat-spinner>
+              </ng-template>
+            </button>
+
+
+            <!-- <button mat-stroked-button color="primary" type="submit" [disabled]="!guestForm.valid">Submit</button> -->
           </div>
         </form>
       </mat-step>

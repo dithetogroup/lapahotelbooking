@@ -19,14 +19,16 @@ import { MatButtonModule } from '@angular/material/button';
     encapsulation: ViewEncapsulation.None,
     template: `
     <button class="r-full" mat-button [matMenuTriggerFor]="menu">
-      <img
+      <!-- <img
         matButtonIcon
         class="avatar r-full"
         [src]="user.avatar"
         width="24"
         alt="avatar"
-      />
+      /> -->
       <span class="m-x-8">{{ user.name }}</span>
+      <div class="avatar r-full initials-avatar">{{ initials }}</div>
+
     </button>
 
     <mat-menu #menu="matMenu" class="profileMenu">
@@ -93,6 +95,15 @@ export class UserComponent implements OnInit {
       )
       .subscribe(() => this.cdr.detectChanges());
   }
+
+  get initials(): string {
+    // fallback to empty string if no user or missing fields
+    if (!this.user) return '';
+    const first = (this.user['full_name'] || '').charAt(0).toUpperCase();
+    const last = (this.user['surname'] || '').charAt(0).toUpperCase();
+    return first + last;
+  }
+  
 
   logout() {
     this.auth.logout();

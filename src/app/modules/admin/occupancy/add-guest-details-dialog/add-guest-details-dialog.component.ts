@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -17,13 +17,16 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { Occupancy } from '../occupancy.model';
 import { UtilsServiceService } from '@core/services/utils-service.service';
 import { OccupancyService } from '../occupancy.service';
-import { first } from 'rxjs';
+import { debounceTime, first, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { AuthService } from '@core/services/auth.service';
+import { User } from '@core/models/interface';
 
 
 @Component({
@@ -43,7 +46,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatSelectModule,
     CommonModule,
     MatStepperModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatProgressSpinner
   ],
   templateUrl: './add-guest-details-dialog.component.html',
   styleUrl: './add-guest-details-dialog.component.scss',
@@ -73,6 +77,9 @@ export class AddGuestDetailsDialogComponent {
     nights: number;
   }[] = [];
   bookedDateRanges: {start: Date, end: Date}[] = [];
+    user!: User;
+
+  
 
   
   constructor(
@@ -81,6 +88,8 @@ export class AddGuestDetailsDialogComponent {
     private occupancyService: OccupancyService,
     private toastr: ToastrService,
     private dialog: MatDialog,
+    private auth: AuthService,
+    private cdr: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: { room: Occupancy },
     public dialogRef: MatDialogRef<AddGuestDetailsDialogComponent>
   ) {
@@ -117,7 +126,16 @@ export class AddGuestDetailsDialogComponent {
       return this.guestForm.get('bookingGroup') as FormGroup;
     }
 
+
+
+
   ngOnInit(){
+    this.auth.user().pipe(
+      tap((user) => (this.user = user)),
+      debounceTime(10)
+    )
+    .subscribe(() => this.cdr.detectChanges());
+
     this.getPackages();
    // this.getOccupants();
     this.getAvailableRooms();
@@ -226,10 +244,12 @@ export class AddGuestDetailsDialogComponent {
         bookingId: this.data.room.id,
         roomNo: this.data.room.roomNo,
         booking_status: 'Booked',
+        booked_by: this.user?.['full_name'],
         payment_status,
         payment_types: this.otherPaymentType || this.guestForm.get('payment_types')?.value
      //   otherPaymentType: this.showOtherPaymentInput ? this.otherPaymentType : null
      //   booking_status
+  
       };
 
       debugger;
