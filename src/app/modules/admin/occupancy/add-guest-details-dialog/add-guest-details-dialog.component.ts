@@ -98,7 +98,7 @@ export class AddGuestDetailsDialogComponent {
         guest_title: [''],
         guest_name:  ['',[Validators.required, Validators.pattern(/^[a-zA-Z ]*$/)], ],
         guest_surname: ['',[Validators.required, Validators.pattern(/^[a-zA-Z ]*$/)], ],
-        guest_address: ['', Validators.required],
+        guest_address: [''],
         guest_phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
         guest_email: ['', Validators.email],
       }),

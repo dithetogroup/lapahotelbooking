@@ -160,14 +160,6 @@
             </mat-form-field>
             </div>
 
-
-
-            <!-- <div *ngFor="let room of getSelectedRoomDetails()">
-              {{ getRoomSummaryLabel(room) }}
-            </div> -->
-            
-
-            <!-- Packages -->
             <div class="col-sm-12 m-b-24">
               <mat-form-field appearance="outline" class="w-100 full-width">
                 <mat-label>Packages</mat-label>
@@ -179,7 +171,6 @@
                 </mat-select>
               </mat-form-field>
             </div>
-
 
             <!-- Special Requests -->
             <div class="col-sm-12 m-b-24">
@@ -258,7 +249,7 @@
                 <mat-select formControlName="payment_types" (selectionChange)="onPaymentTypeSelect($event.value)">
                   <mat-option value="Cash">Cash</mat-option>
                   <mat-option value="EFT">EFT</mat-option>
-                  <mat-option value="Voucher">Voucher</mat-option>
+                  <mat-option value="Voucher">SpeedPoint</mat-option>
                   <mat-option value="Other">Other</mat-option>
                 </mat-select>
               </mat-form-field>

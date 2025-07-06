@@ -178,23 +178,28 @@ INSERT INTO room_details (bed_type_id, room_details_list) VALUES (1, '2 Adults 1
 
     -- Seed Packages
     INSERT INTO packages (package_name, package_price) VALUES 
-    ('Bed & BreakFast', 600.00),
-    ('All Inclusive', 1200.00),
-    ('Head Massage', 300.00),
-    ('Full Body Massage', 300.00),
-    ('Breakfast In Bed', 300.00),
-    ('Venue Hire', 5000.00),
-    ('Sonar', 150.00),
-    ('Morning Hike', 400.00),
+    ('BreakFast', 180.00),
+    ('Dinner', 180.00),
+    ('Lunch', 180.00),
+    ('Anti Stress', 200.00),
+    ('Hot Stone Half Body(30m)', 300.00),
+    ('Hot Stone Full Body (45m)', 390.00),
+    ('Hot Stone Full Body (60m)', 530.00),
+    ('Facial (45m)', 400.00),
+    ('Couples Full Body(45m)', 650.00),
     ('None', 0.00);
 
 -- 1. Add Users
 INSERT INTO users (id, username, password, full_name, surname, email)
 VALUES
-  (1, 'jason',  '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Mathipa', 'Makgato',  'jason@example.com'),
-  (2, 'boni',   '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Boni',    'Dikgale',  'lebo@example.com'),
-  (3, 'thakgi', '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Thakgi',  'Dikgale',  'thakgi@example.com'),
-  (4, 'ranti',  '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Ranti',   'Dikgale',  'ranti@example.com');
+  (1, 'jason',    '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Mathipa',  'Makgato',   'jason@example.com'),
+  (2, 'boni',     '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Boni',     'Dikgale',   'lebo@example.com'),
+  (3, 'testing1', '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'testing1', 'testing1',   'testing1@example.com'),
+  (4, 'testing2', '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'testing2', 'testing2',   'testing2@example.com'),
+  (5, 'testing3', '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'testing3', 'testing3',   'testing3@example.com'),
+  (6, 'testing4', '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'testing4', 'testing4',   'testing4@example.com'),
+  (7, 'testing5', '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'testing5', 'testing5',   'testing5@example.com'),
+  (8, 'ranti',    '$2y$10$npVPRPtYgocXFNk0CREX5uOTuCD3e.aA1fN3x1ucHecOhUtwyiBB.', 'Ranti',    'Dikgale',   'ranti@example.com');
 
 -- 2. Add Roles
 INSERT INTO roles (id, name, priority)
@@ -204,11 +209,16 @@ VALUES
 
 -- 3. Assign Users to Roles
 INSERT INTO user_roles (user_id, role_id) VALUES
-  (1, 1), -- Jason as ADMIN
-  (1, 2), -- Jason as EMPLOYEE
-  (2, 2), -- Boni as EMPLOYEE
-  (3, 2), -- Thakgi as EMPLOYEE
-  (4, 1); -- Ranti as ADMIN
+  (1, 1),  -- Jason as ADMIN
+  (1, 2),  -- Jason as EMPLOYEE
+  (2, 2),  -- Boni as EMPLOYEE
+  (3, 2),  -- testing1 as EMPLOYEE
+  (4, 2),  -- testing2 as EMPLOYEE
+  (5, 2),  -- testing3 as EMPLOYEE
+  (6, 2),  -- testing4 as EMPLOYEE
+  (7, 2),  -- testing5 as EMPLOYEE
+  (8, 1);  -- Ranti as ADMIN
+
 
 -- 4. Add Permissions
 INSERT INTO permissions (id, name) VALUES
@@ -220,15 +230,16 @@ INSERT INTO permissions (id, name) VALUES
 
 -- 5. Assign Permissions to Roles
 INSERT INTO role_permissions (role_id, permission_id) VALUES
-  (1, 1),
-  (1, 2),
-  (1, 3),
-  (1, 4),
-  (1, 5),
-  (2, 1),
-  (2, 3),
-  (2, 4),
-  (2, 5);
+  (1, 1), -- ADMIN: VIEW_DASHBOARD
+  (1, 2), -- ADMIN: EDIT_PROFILE
+  (1, 3), -- ADMIN: canAdd
+  (1, 4), -- ADMIN: canEdit
+  (1, 5), -- ADMIN: canRead
+  (2, 1), -- EMPLOYEE: VIEW_DASHBOARD
+  (2, 3), -- EMPLOYEE: canAdd
+  (2, 4), -- EMPLOYEE: canEdit
+  (2, 5); -- EMPLOYEE: canRead
+
 
 
 

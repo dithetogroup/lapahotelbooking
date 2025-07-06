@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+Sitemap: https://hiking44adventures.com/sitemap_index.xml

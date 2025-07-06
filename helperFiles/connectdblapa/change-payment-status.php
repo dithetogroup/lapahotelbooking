@@ -20,25 +20,17 @@ if (!$data || !isset($data['booking_reference']) || !isset($data['status'])) {
 
 $bookingRef = $mysqli->real_escape_string($data['booking_reference']);
 $status = $mysqli->real_escape_string($data['status']);
-$today = date('Y-m-d');
 
-if (!in_array($status, ['CheckIn', 'CheckOut'])) {
+if (!in_array($status, ['Paid', 'Unpaid'])) {
     error_log("[ERROR] Invalid status: $status");
     http_response_code(400);
-    echo json_encode(["status" => "error", "message" => "Invalid status value"]);
+    echo json_encode(["status" => "error", "message" => "Invalid payment status value"]);
     exit;
 }
 
-// Update booking_status and set the appropriate date
-if ($status === 'CheckIn') {
-    $sql = "UPDATE guest_bookings 
-            SET checkInStatus = ?, checkInDate = ?, updated_at = NOW() 
-            WHERE booking_reference = ?";
-} else { // CheckOut
-    $sql = "UPDATE guest_bookings 
-            SET checkInStatus = ?, checkOutDate = ?, updated_at = NOW() 
-            WHERE booking_reference = ?";
-}
+$sql = "UPDATE guest_bookings 
+        SET payment_status = ?, updated_at = NOW() 
+        WHERE booking_reference = ?";
 
 $stmt = $mysqli->prepare($sql);
 if (!$stmt) {
@@ -48,11 +40,11 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param("sss", $status, $today, $bookingRef);
+$stmt->bind_param("ss", $status, $bookingRef);
 
 if ($stmt->execute()) {
-    error_log("[INFO] Booking status updated to $status for ref $bookingRef");
-    echo json_encode(["status" => "success", "message" => "Booking updated to $status"]);
+    error_log("[INFO] Payment status updated to $status for ref $bookingRef");
+    echo json_encode(["status" => "success", "message" => "Payment Status updated to $status"]);
 } else {
     error_log("[ERROR] Failed to execute: " . $stmt->error);
     http_response_code(500);
