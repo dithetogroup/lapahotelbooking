@@ -6,6 +6,8 @@ import { LoginService } from './login.service';
 import { User } from '@core/models/interface';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '@shared';
+import { MenuService } from '@core';
+
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +29,9 @@ export class AuthService {
     private loginService: LoginService,
     private tokenService: TokenService,
     private router: Router,
-    private store: LocalStorageService
+    private store: LocalStorageService,
+    private menuService: MenuService
+
   ) {
     this.user$ = new BehaviorSubject<User>(this.store.get('currentUser'));
     this.restoreSession();
@@ -39,6 +43,20 @@ export class AuthService {
     );
   }
 
+  initializeAuth() {
+    const user = this.store.get('currentUser');
+    const roleNames = this.store.get('roleNames');
+  
+    if (user && roleNames) {
+      this.user$.next(user);
+      this.tokenService.permissionArray = user.permissions ?? [];
+      this.tokenService.roleArray = JSON.parse(roleNames);
+  
+      // Re-load the menu
+      this.menuService.loadMenu();
+    }
+  }
+  
   restoreSession() {
     const token = this.tokenService.getToken();
     if (token && token.valid && token.valid()) {

@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { StartupService } from '@core/services/startup.service';
+import { AuthService } from '@core/services/auth.service'; // adjust path as needed
+
 
 @Component({
     selector: 'app-root',
@@ -20,10 +22,12 @@ export class AppComponent implements AfterViewInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private renderer: Renderer2,
-    private startupService: StartupService
+    private startupService: StartupService,
+    private authService: AuthService,
+
   ) {
     this.startupService.load();
-
+    this.authService.initializeAuth();
   }
 
   ngAfterViewInit(): void {

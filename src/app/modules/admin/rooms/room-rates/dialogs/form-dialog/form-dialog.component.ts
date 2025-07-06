@@ -25,13 +25,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { RoomRatesService } from '../../room-rates.service'; // Update with the actual service
-import { RoomRates } from '../../room-rates.model'; // Update with the actual model
+import { RoomRatesService } from '../../room-rates.service';
+import { RoomTypeDetails } from '../../room-rates-all.model';
+import { NgIf } from '@angular/common';
 
 export interface DialogData {
-  id: number;
-  action: string;
-  roomRates: RoomRates;
+  roomRates: RoomTypeDetails;
+  action: 'edit' | 'add';
 }
 
 @Component({
@@ -53,14 +53,14 @@ export interface DialogData {
     MatOptionModule,
     MatNativeDateModule,
     MatMomentDateModule,
+    NgIf
   ],
 })
 export class RoomRatesFormDialogComponent {
   action: string;
   dialogTitle: string;
   roomRatesForm: FormGroup;
-  roomRates: RoomRates;
-  url: string | null = null; // Initialized to null
+  roomRates: RoomTypeDetails;
 
   constructor(
     public dialogRef: MatDialogRef<RoomRatesFormDialogComponent>,
@@ -68,79 +68,63 @@ export class RoomRatesFormDialogComponent {
     public roomRatesService: RoomRatesService,
     private fb: FormBuilder
   ) {
-    // Set the defaults
     this.action = data.action;
-    if (this.action === 'edit') {
-      this.dialogTitle = data.roomRates.roomType; // Adjust property as needed
-      this.roomRates = data.roomRates;
-    } else {
-      this.dialogTitle = 'New Record';
-      this.roomRates = {} as RoomRates; // Adjust if necessary
-    }
-    this.roomRatesForm = this.createRoomRatesForm();
+    this.roomRates = data.roomRates || {} as RoomTypeDetails;
+    this.dialogTitle = this.action === 'edit' ? 'Edit Room Type' : 'New Room Type';
+    this.roomRatesForm = this.createForm();
+
+    console.log('[DEBUG] Dialog data:', data);
+    console.log('[DEBUG] Action received:', data.action);
+
   }
 
-  formControl = new FormControl('', [
-    Validators.required,
-    // Validators.name,
-  ]);
 
-  getErrorMessage() {
-    return this.formControl.hasError('required')
-      ? 'Required field'
-      : this.formControl.hasError('name')
-      ? 'Not a valid name'
-      : '';
-  }
 
-  createRoomRatesForm(): FormGroup {
+  createForm(): FormGroup {
     return this.fb.group({
-      id: [this.roomRates.id],
-      roomType: [this.roomRates.roomType, [Validators.required]],
-      ratePlan: [this.roomRates.ratePlan, [Validators.required]],
-      baseRate: [this.roomRates.baseRate, [Validators.required]],
-      seasonalRate: [this.roomRates.seasonalRate],
-      promotionalRate: [this.roomRates.promotionalRate],
-      additionalCharges: [this.roomRates.additionalCharges],
-      effectiveDate: [this.roomRates.effectiveDate],
-      endDate: [this.roomRates.endDate],
-      bookingWindow: [this.roomRates.bookingWindow],
-      cancellationPolicy: [this.roomRates.cancellationPolicy],
-      minimumStay: [this.roomRates.minimumStay],
-      maxOccupancy: [this.roomRates.maxOccupancy],
-      status: [this.roomRates.status, [Validators.required]],
+      roomTypeId: [this.roomRates.roomTypeId || null],
+      roomName: [this.roomRates.roomName || '', Validators.required],
+      roomCode: [this.roomRates.roomCode || '', Validators.required],
+      weekendRate: [this.roomRates.weekendRate || '', Validators.required],
+      weekRate: [this.roomRates.weekRate || '', Validators.required],
+      discountedRate: [this.roomRates.discountedRate || ''],
+      bedType: [this.roomRates.bedType || '', Validators.required],
+      totalRooms: [{ value: this.roomRates.totalRooms, disabled: true }],
+
     });
-  }
+  } 
 
   submit() {
     if (this.roomRatesForm.valid) {
+      const formValue = this.roomRatesForm.getRawValue();
+      console.log('[DEBUG] Submitting form:', formValue);
+  
       if (this.action === 'edit') {
-        // Update existing room rate
-        this.roomRatesService.updateRoomRates(this.roomRatesForm.getRawValue());
+        this.roomRatesService.updateRoomRates(formValue).subscribe({
+          next: (res) => {
+            console.log('[DEBUG] Room updated successfully:', res);
+            this.dialogRef.close(formValue);
+          },
+          error: (err) => {
+            console.error('[ERROR] Failed to update room:', err);
+          }
+        });
       } else {
-        // Add new room rate
-        this.roomRatesService.addRoomRates(this.roomRatesForm.getRawValue());
+        this.roomRatesService.addRoomRates(formValue).subscribe({
+          next: (res) => {
+            console.log('[DEBUG] Room added successfully:', res);
+            this.dialogRef.close(formValue);
+          },
+          error: (err) => {
+            console.error('[ERROR] Failed to add room:', err);
+          }
+        });
       }
-      this.dialogRef.close(this.roomRatesForm.getRawValue());
     }
   }
+  
 
   onNoClick(): void {
     this.dialogRef.close();
-  }
-
-  onSelectFile(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files[0]) {
-      const reader = new FileReader();
-
-      reader.readAsDataURL(target.files[0]); // read file as data url
-
-      reader.onload = (e) => {
-        if (e.target) {
-          this.url = e.target.result as string; // Explicitly cast to avoid undefined
-        }
-      };
-    }
   }
 }

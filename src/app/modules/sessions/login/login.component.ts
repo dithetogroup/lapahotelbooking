@@ -140,24 +140,9 @@ export class LoginComponent {
           this.store.set('currentUser', response.user);
           const roleNames = roleData.map((role: { name: string }) => role.name);
           this.store.set('roleNames', JSON.stringify(roleNames));
-
-
-
-
-          
-
-
   
-          // === Now, load the menu the "old way" ===
           this.auth.menu().subscribe(menu => {
-            // You can store/broadcast menu as needed
-            // For demo:
             console.log('Menu after login:', menu);
-  
-            // Optionally, update a shared menu service
-            // this.menuService.setMenu(menu);
-
-            
   
             // Now navigate
             for (const role of this.tokenService.roleArray ?? []) {
