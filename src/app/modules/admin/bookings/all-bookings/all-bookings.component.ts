@@ -40,6 +40,7 @@ import { AllBookings } from './all-bookings.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AllBookingslist, BookingRow, GroupedBooking } from './all-bookinglist.model';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -110,7 +111,8 @@ export class AllBookingsComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private allBookingService: AllBookingService,
     private snackBar: MatSnackBar,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit() {
@@ -211,17 +213,55 @@ export class AllBookingsComponent implements OnInit, OnDestroy {
   }
   
   toggleCheckStatus(row: BookingRow) {
+
     const newStatus = row.checkInStatus === 'CheckIn' ? 'CheckOut' : 'CheckIn';
-    this.allBookingService.bookingStatus({booking_reference: row.booking_reference,status: newStatus}).subscribe({
+     // Prevent checkout if payment is unpaid
+     debugger;
+    if (newStatus === 'CheckOut' && row.payment_status === 'Unpaid') {
+      this.toastr.error('Cannot check out: Payment is Oustanding.');
+      return;
+    }
+
+    this.allBookingService.bookingStatus({
+      booking_reference: row.booking_reference,
+      status: newStatus
+    }).subscribe({
       next: (res) => {
         row.checkInStatus = newStatus;
         const today = new Date().toISOString().split('T')[0];
-        if (newStatus === 'CheckIn') row.checkInDate = today;
-        else row.checkOutDate = today;
+        if (newStatus === 'CheckIn') {
+          row.checkInDate = today;
+        } else {
+          row.checkOutDate = today;
+        }
+        this.toastr.success(`Status updated to ${newStatus}`);
       },
-      error: (err) => console.error('Status update failed', err)
+      error: (err) => {
+        console.error('Status update failed', err);
+        this.toastr.error('Check status update failed');
+      }
     });
   }
+  
+
+
+  togglePaidStatus(row: BookingRow) {
+    const newStatus = row.payment_status === 'Paid' ? 'Unpaid' : 'Paid';
+    this.allBookingService.paymentStatus({
+      booking_reference: row.booking_reference,
+      status: newStatus
+    }).subscribe({
+      next: (res) => {
+        row.payment_status = newStatus;
+        this.toastr.success(`Payment status updated to ${newStatus}`);
+      },
+      error: (err) => {
+        console.error('Payment Status update failed', err);
+        this.toastr.error("Payment Status update failed");
+      }
+    });
+  }
+  
   
 
   showNotification(

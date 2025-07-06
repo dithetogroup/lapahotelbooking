@@ -26,8 +26,14 @@ export class AllBookingService {
   // }
 
   bookingStatus(payload: any): Observable<any> {
+    debugger;
     const body = payload;
     return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.bookingStatus, body); 
+  }
+
+  paymentStatus(payload: any): Observable<any> {
+    const body = payload;
+    return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.paymentStatus, body); 
   }
 
   getAllBookingLists(): Observable<{ status: string; data: AllBookingslist[] }> {

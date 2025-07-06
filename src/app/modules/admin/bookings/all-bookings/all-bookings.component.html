@@ -176,9 +176,24 @@
                 <!-- <button mat-menu-item (click)="deleteItem(row)">
                   <mat-icon class="text-red">delete_outline</mat-icon> Delete Booking
                 </button> -->
-                <button mat-menu-item (click)="toggleCheckStatus(row)">
-                  <mat-icon>logout</mat-icon>
+                <!-- <button mat-menu-item (click)="toggleCheckStatus(row)">
+                  <mat-icon>{{ row.checkInStatus === 'CheckIn' ? 'logout' : 'login' }}</mat-icon>
                   {{ row.checkInStatus === 'CheckIn' ? 'Check Out' : 'Check In' }}
+                </button> -->
+
+                <button
+                  mat-menu-item
+                  (click)="toggleCheckStatus(row)"
+                  [disabled]="row.checkInStatus === 'CheckOut'"
+                >
+                  <mat-icon>{{ row.checkInStatus === 'CheckIn' ? 'logout' : 'login' }}</mat-icon>
+                  {{ row.checkInStatus === 'CheckIn' ? 'Check Out' : 'Check In' }}
+                </button>
+
+
+                <button mat-menu-item (click)="togglePaidStatus(row)">
+                  <mat-icon>edit</mat-icon>
+                  {{ row.payment_status === 'Paid' ? 'Unpaid' : 'Paid' }}
                 </button>
                 
                 <!-- <button mat-menu-item (click)="cancelBooking(row)">

@@ -15,9 +15,9 @@
           <mat-tab label="Personal Info">
             <div *ngIf="!isEditMode">
               <p><strong>Name:</strong> {{ roomData.guestDetails?.personalInfo?.title }} {{ roomData.guestDetails?.personalInfo?.name }} {{ roomData.guestDetails?.personalInfo?.surname }}</p>
-              <p><strong>Address:</strong> {{ roomData.guestDetails?.personalInfo?.address }}</p>
+              <p><strong>Address:</strong> {{ roomData.guestDetails?.personalInfo?.address || 'N/A'}}</p>
               <p><strong>Phone:</strong> {{ roomData.guestDetails?.personalInfo?.phone }}</p>
-              <p><strong>Email:</strong> {{ roomData.guestDetails?.personalInfo?.email }}</p>
+              <p><strong>Email:</strong> {{ roomData.guestDetails?.personalInfo?.email || 'N/A' }}</p>
             </div>
   
             <div *ngIf="isEditMode" class="form-grid-2col m-t-24">
@@ -92,16 +92,23 @@
           </mat-tab>
   
           <!-- Step 3: Payment Info -->
+
           <mat-tab label="Payment Info">
-            <p><strong>Payment Type:</strong> {{ roomData.guestDetails?.reservationInfo?.paymentTypes }}</p>
+          <p *ngIf="roomData.guestDetails?.reservationInfo?.paymentTypes">
+            <strong>Payment Type:</strong> {{ roomData.guestDetails?.reservationInfo?.paymentTypes }}
+          </p>
+          <!-- <pre>paymentTypes: {{ roomData.guestDetails?.reservationInfo?.paymentTypes | json }}</pre> -->
+            <!-- <p><strong>Payment Type:</strong> {{ roomData.guestDetails?.reservationInfo?.paymentTypes }}</p> -->
             <p><strong>Payment Status:</strong> {{ roomData.guestDetails?.reservationInfo?.paymentStatus }}</p>
             <p><strong>Amount:</strong> R{{ roomData.guestDetails?.reservationInfo?.paymentAmount }}</p>
           </mat-tab>
   
           <!-- Step 4: Extras -->
           <mat-tab label="Extras">
-            <p><strong>Special Requests:</strong> {{ roomData.guestDetails?.specialRequests }}</p>
-            <p><strong>Packages:</strong> {{ roomData.guestDetails?.package?.name }}</p>
+            <p><strong>Special Requests:</strong> {{ roomData.guestDetails?.specialRequests || 'N/A' }}</p>
+            <p> <strong>Packages:</strong> {{ roomData.guestDetails?.package?.name || 'N/A' }} </p>
+            
+            <!-- <p *ngIf="roomData.guestDetails?.package?.name"><strong>Packages:</strong> {{ roomData.guestDetails?.package?.name }}</p> -->
           </mat-tab>
         </mat-tab-group>
       </mat-dialog-content>
