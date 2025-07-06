@@ -13,14 +13,13 @@ import {
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
-import { Subject, fromEvent } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { RoomRatesFormDialogComponent } from './dialogs/form-dialog/form-dialog.component';
 import { DeleteDialogComponent } from './dialogs/delete/delete.component';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableExportUtil, rowsAnimation } from '@shared';
-import { CommonModule, DatePipe, formatDate, NgClass } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -34,106 +33,59 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FeatherIconsComponent } from '@shared/components/feather-icons/feather-icons.component';
 import { RoomRatesService } from './room-rates.service';
-import { RoomRates } from './room-rates.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
   MAT_DATE_LOCALE,
   MatOptionModule,
   MatRippleModule,
 } from '@angular/material/core';
+import { RoomTypeDetails } from './room-rates-all.model';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
-    selector: 'app-room-rates',
-    providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }, DatePipe],
-    animations: [rowsAnimation],
-    imports: [
-        PageHeaderComponent,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatButtonModule,
-        MatTooltipModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-        FormsModule,
-        CommonModule,
-        MatOptionModule,
-        MatCheckboxModule,
-        MatTableModule,
-        MatSortModule,
-        NgClass,
-        FeatherIconsComponent,
-        MatRippleModule,
-        MatProgressSpinnerModule,
-        MatMenuModule,
-        MatPaginatorModule,
-        DatePipe,
-    ],
-    templateUrl: './room-rates.component.html',
-    styleUrls: ['./room-rates.component.scss']
+  selector: 'app-room-rates',
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }, DatePipe],
+  animations: [rowsAnimation],
+  imports: [
+    PageHeaderComponent,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    MatOptionModule,
+    MatCheckboxModule,
+    MatTableModule,
+    MatSortModule,
+    FeatherIconsComponent,
+    MatRippleModule,
+    MatProgressSpinnerModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    DatePipe,
+  ],
+  templateUrl: './room-rates.component.html',
+  styleUrls: ['./room-rates.component.scss']
 })
 export class RoomRatesComponent implements OnInit, OnDestroy {
   columnDefinitions = [
-    { def: 'select', label: 'Checkbox', type: 'checkBox', visible: true },
-    { def: 'roomType', label: 'Room Type', type: 'text', visible: true },
-    { def: 'ratePlan', label: 'Rate Plan', type: 'text', visible: true },
-    { def: 'baseRate', label: 'Base Rate', type: 'number', visible: true },
-    {
-      def: 'seasonalRate',
-      label: 'Seasonal Rate',
-      type: 'number',
-      visible: true,
-    },
-    {
-      def: 'promotionalRate',
-      label: 'Promotional Rate',
-      type: 'number',
-      visible: true,
-    },
-    {
-      def: 'additionalCharges',
-      label: 'Additional Charges',
-      type: 'number',
-      visible: false,
-    },
-    {
-      def: 'effectiveDate',
-      label: 'Effective Date',
-      type: 'date',
-      visible: true,
-    },
-    { def: 'endDate', label: 'End Date', type: 'date', visible: true },
-    {
-      def: 'bookingWindow',
-      label: 'Booking Window',
-      type: 'text',
-      visible: false,
-    },
-    {
-      def: 'cancellationPolicy',
-      label: 'Cancellation Policy',
-      type: 'text',
-      visible: false,
-    },
-    {
-      def: 'minimumStay',
-      label: 'Minimum Stay',
-      type: 'number',
-      visible: false,
-    },
-    {
-      def: 'maxOccupancy',
-      label: 'Max Occupancy',
-      type: 'number',
-      visible: false,
-    },
-    { def: 'status', label: 'Status', type: 'text', visible: true },
-    { def: 'actions', label: 'Actions', type: 'actionBtn', visible: true },
+    { def: 'roomName', label: 'Room Name', type: 'text', visible: true },
+    { def: 'weekRate', label: 'Week Rate', type: 'number', visible: true },
+    { def: 'weekendRate', label: 'Weeked Rate', type: 'number', visible: true },
+    { def: 'discountedRate', label: 'Discounted Rate', type: 'number', visible: true },
+    { def: 'bedType', label: 'Bed Type', type: 'text', visible: true },
+    { def: 'totalRooms', label: 'Total Rooms', type: 'text', visible: true },
+    { def: 'actions', label: 'Actions', type: 'actionBtn', visible: true }
   ];
 
-  dataSource = new MatTableDataSource<RoomRates>([]);
-  selection = new SelectionModel<RoomRates>(true, []);
+  dataSource: MatTableDataSource<RoomTypeDetails, MatPaginator> = new MatTableDataSource<RoomTypeDetails, MatPaginator>([]);
+  selection = new SelectionModel<RoomTypeDetails>(true, []);
   private destroy$ = new Subject<void>();
   contextMenuPosition = { x: '0px', y: '0px' };
   isLoading = true;
@@ -147,7 +99,8 @@ export class RoomRatesComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private roomRatesService: RoomRatesService,
     private snackBar: MatSnackBar,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit() {
@@ -173,11 +126,13 @@ export class RoomRatesComponent implements OnInit, OnDestroy {
     this.openDialog('add');
   }
 
-  editCall(row: RoomRates) {
+  editCall(row: RoomTypeDetails) {
+    debugger;
     this.openDialog('edit', row);
   }
 
-  openDialog(action: 'add' | 'edit', data?: RoomRates) {
+  openDialog(action: 'add' | 'edit', data?: RoomTypeDetails) {
+   // debugger;
     const dialogRef = this.dialog.open(RoomRatesFormDialogComponent, {
       width: '60vw',
       maxWidth: '100vw',
@@ -187,25 +142,21 @@ export class RoomRatesComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        if (action === 'add') {
+        if (action === 'edit') {
           this.dataSource.data = [result, ...this.dataSource.data];
         } else {
+        //  debugger;
           this.updateRecord(result);
         }
         this.refreshTable();
-        this.showNotification(
-          action === 'add' ? 'snackbar-success' : 'black',
-          `${action === 'add' ? 'Add' : 'Edit'} Record Successfully...!!!`,
-          'bottom',
-          'center'
-        );
+        this.toastr.success(`${action === 'add' ? 'Add' : 'Edit'} record successfully!`);
       }
     });
   }
 
-  private updateRecord(updatedRecord: RoomRates) {
+  private updateRecord(updatedRecord: RoomTypeDetails) {
     const index = this.dataSource.data.findIndex(
-      (record) => record.id === updatedRecord.id
+      (record) => record.roomTypeId === updatedRecord.roomTypeId
     );
     if (index !== -1) {
       this.dataSource.data[index] = updatedRecord;
@@ -213,21 +164,15 @@ export class RoomRatesComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteItem(row: RoomRates) {
+  deleteItem(row: RoomTypeDetails) {
     const dialogRef = this.dialog.open(DeleteDialogComponent, { data: row });
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.dataSource.data = this.dataSource.data.filter(
-          (record) => record.id !== row.id
+          (record) => record.roomTypeId !== row.roomTypeId
         );
         this.refreshTable();
-        this.showNotification(
-          'snackbar-danger',
-          'Delete Record Successfully...!!!',
-          'bottom',
-          'center'
-        );
+        this.toastr.success('Deleted record successfully!');
       }
     });
   }
@@ -252,7 +197,7 @@ export class RoomRatesComponent implements OnInit, OnDestroy {
   masterToggle() {
     this.isAllSelected()
       ? this.selection.clear()
-      : this.dataSource.data.forEach((row) => this.selection.select(row));
+      : this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
   removeSelectedRows() {
@@ -263,7 +208,7 @@ export class RoomRatesComponent implements OnInit, OnDestroy {
     this.selection.clear();
     this.showNotification(
       'snackbar-danger',
-      `${totalSelect} Record(s) Deleted Successfully...!!!`,
+      `${totalSelect} record(s) deleted successfully!`,
       'bottom',
       'center'
     );
@@ -271,11 +216,23 @@ export class RoomRatesComponent implements OnInit, OnDestroy {
 
   loadData() {
     this.roomRatesService.getAllRoomRates().subscribe({
-      next: (data) => {
+      next: (res) => {
+        const data = res.data.map((item: any) => ({
+          roomTypeId: parseInt(item.room_type_id, 10),
+          roomName: item.room_name,
+          roomCode: item.room_code,
+          weekendRate: item.weekend_price,
+          weekRate: item.week_price,
+          discountedRate: item.discounted_price,
+          bedType: item.bed_type,
+          totalRooms: parseInt(item.total_rooms, 10),
+        }));
+
         this.dataSource.data = data;
         this.isLoading = false;
         this.refreshTable();
-        this.dataSource.filterPredicate = (data: RoomRates, filter: string) =>
+
+        this.dataSource.filterPredicate = (data: RoomTypeDetails, filter: string) =>
           Object.values(data).some((value) =>
             value.toString().toLowerCase().includes(filter)
           );
@@ -299,26 +256,19 @@ export class RoomRatesComponent implements OnInit, OnDestroy {
   }
 
   exportExcel() {
-    const exportData = this.dataSource.filteredData.map((x) => ({
-      'Room Type': x.roomType,
-      'Rate Plan': x.ratePlan,
-      'Base Rate': x.baseRate,
-      'Seasonal Rate': x.seasonalRate,
-      'Promotional Rate': x.promotionalRate,
-      'Additional Charges': x.additionalCharges,
-      'Effective Date':
-        formatDate(new Date(x.effectiveDate), 'yyyy-MM-dd', 'en') || '',
-      'End Date': formatDate(new Date(x.endDate), 'yyyy-MM-dd', 'en') || '',
-      'Booking Window': x.bookingWindow,
-      'Cancellation Policy': x.cancellationPolicy,
-      'Minimum Stay': x.minimumStay,
-      'Max Occupancy': x.maxOccupancy,
-      Status: x.status,
+    const exportData = this.dataSource.filteredData.map((x: RoomTypeDetails) => ({
+      'Room Name': x.roomName,
+      'Room Code': x.roomCode,
+      'Weekend Rate': x.weekendRate,
+      'Discounted Rate': x.discountedRate,
+      'Bed Type': x.bedType,
+      'Total Rooms': x.totalRooms,
     }));
-    TableExportUtil.exportToExcel(exportData, 'excel');
+
+    TableExportUtil.exportToExcel(exportData, 'room-types');
   }
 
-  onContextMenu(event: MouseEvent, item: RoomRates) {
+  onContextMenu(event: MouseEvent, item: RoomTypeDetails) {
     event.preventDefault();
     this.contextMenuPosition.x = `${event.clientX}px`;
     this.contextMenuPosition.y = `${event.clientY}px`;

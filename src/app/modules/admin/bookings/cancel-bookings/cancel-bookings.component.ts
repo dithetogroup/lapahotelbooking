@@ -220,7 +220,7 @@ dateTo: Date | null = null;
         ];
   
         this.dataSource.data = flatList;
-        console.log('new canceled', this.dataSource.data);
+      //  console.log('new canceled', this.dataSource.data);
         this.isLoading = false;
   
         this.dataSource.paginator = this.paginator;

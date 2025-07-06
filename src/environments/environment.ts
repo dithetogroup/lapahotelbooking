@@ -6,7 +6,6 @@ export const environment = {
   // baseUrl: 'https://board.dithetogroup.co.za/connectdbhiking',
   // dynamicBaseUrl: 'https://board.dithetogroup.co.za/',
 
-
   urlEndPoints: {
     getoccupancy: '/get-occupancy.php',
     getAllRoomList: '/get-all-rooms.php',
@@ -25,6 +24,8 @@ export const environment = {
     getRoomBookedDates: '/get-room-booked-dates.php',
     getAllBookingInvoices: '/get-booking-invoices.php',
     loginUser: '/login.php',    
-    logoutUser: '/logout.php'
+    logoutUser: '/logout.php',
+    getAllRoomRates: '/get-all-rooms-rates.php',
+    updateRoomRates: '/update-room-rates.php'
   }
 };

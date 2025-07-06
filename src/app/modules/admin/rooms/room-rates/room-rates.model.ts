@@ -15,6 +15,13 @@ export class RoomRates {
   action: string;
   status: string;
 
+  // ✅ New fields from SQL query
+  roomCode: string;
+  weekendRate: string;
+  discountedRate: string;
+  bedType: string;
+  totalRooms: number;
+
   constructor(roomRates: Partial<RoomRates>) {
     this.id = roomRates.id || this.getRandomID();
     this.roomType = roomRates.roomType || '';
@@ -31,6 +38,13 @@ export class RoomRates {
     this.maxOccupancy = roomRates.maxOccupancy || '';
     this.action = roomRates.action || '';
     this.status = roomRates.status || '';
+
+    // ✅ New fields initialization
+    this.roomCode = roomRates.roomCode || '';
+    this.weekendRate = roomRates.weekendRate || '';
+    this.discountedRate = roomRates.discountedRate || '';
+    this.bedType = roomRates.bedType || '';
+    this.totalRooms = roomRates.totalRooms || 0;
   }
 
   public getRandomID(): number {

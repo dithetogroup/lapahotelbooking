@@ -72,34 +72,45 @@
       "name": "rooms",
       "type": "sub",
       "icon": "bed",
-      "permissions": {
-         "only": "ADMIN"
-      },
+     
       "children": [
         {
           "route": "all-rooms",
           "name": "all-rooms",
-          "type": "link"
+          "type": "link",
+          "permissions": {
+            "only": "ADMIN"
+        }
         },
         {
           "route": "add-room",
           "name": "add-room",
-          "type": "link"
+          "type": "link",
+          "permissions": {
+            "only": "ADMIN"
+        }
         },
         {
           "route": "edit-room",
           "name": "edit-room",
-          "type": "link"
+          "type": "link",
+          "permissions": {
+            "only": "ADMIN"
+        }
         },
         {
           "route": "room-types",
           "name": "room-types",
-          "type": "link"
+          "type": "link",
+          "permissions": {
+            "only": "ADMIN"
+        }
         },
         {
           "route": "room-rates",
-          "name": "room-rates",
+          "name": "Room Rates",
           "type": "link"
+         
         }
       ]
      
@@ -247,6 +258,7 @@
           "route": "",
           "name": "form-controls",
           "type": "sub",
+          
           "children": [
             {
               "route": "autocomplete",
@@ -293,7 +305,11 @@
               "name": "slide-toggle",
               "type": "link"
             }
-          ]
+          ],
+          
+            "permissions": {
+              "only": "ADMIN"
+            }
         },
         {
           "route": "",
@@ -435,8 +451,8 @@
         }
       ],
       "permissions": {
-        "except": [
-          "EMPLOYEE"
+        "only": [
+          "ADMIN"
         ]
       }
     },
