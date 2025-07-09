@@ -50,7 +50,12 @@ export class AuthService {
     if (user && roleNames) {
       this.user$.next(user);
       this.tokenService.permissionArray = user.permissions ?? [];
-      this.tokenService.roleArray = JSON.parse(roleNames);
+      try {
+        this.tokenService.roleArray = typeof roleNames === 'string' ? JSON.parse(roleNames) : roleNames;
+      } catch (e) {
+        console.error('[ERROR] Failed to parse roleNames:', roleNames, e);
+        this.tokenService.roleArray = [];
+      }
   
       // Re-load the menu
       this.menuService.loadMenu();
