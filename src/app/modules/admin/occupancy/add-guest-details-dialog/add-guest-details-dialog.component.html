@@ -211,9 +211,19 @@
                   </div>
                 </div>
 
+                <!-- <div style="margin-top: 10px;">
+                  <strong>Total: R{{ totalAmountToPay | number:'1.2-2' }}</strong>
+                </div> -->
+
+                <div *ngIf="discountTotal > 0" style="color: #009688; margin-bottom: 5px; margin-top: 10px;">
+                  <strong>Discount Applied: -R{{ discountTotal | number:'1.2-2' }}</strong>
+                </div>
                 <div style="margin-top: 10px;">
                   <strong>Total: R{{ totalAmountToPay | number:'1.2-2' }}</strong>
                 </div>
+
+                
+
               </div>
             </div>
           </div>

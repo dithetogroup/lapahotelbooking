@@ -163,6 +163,21 @@ SET FOREIGN_KEY_CHECKS = 1;
         FOREIGN KEY (booking_id) REFERENCES guest_bookings(id) ON DELETE CASCADE
     );
 
+    -- Guest Details
+    CREATE TABLE regular_guests (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        rg_account INT,
+        rg_title VARCHAR(100),
+        rg_name VARCHAR(100),
+        rg_surname VARCHAR(100),
+        rg_company VARCHAR(100),
+        rg_email VARCHAR(100),
+        rg_address TEXT,
+        rg_phone VARCHAR(20),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE cancelled_rooms (
         id INT AUTO_INCREMENT PRIMARY KEY,
         booking_reference VARCHAR(50) NOT NULL,

@@ -115,6 +115,13 @@
               </div>
               <div class="price">
                 <small class="text-muted m-t-8 d-inline-block price">R{{ room.weekPrice }}</small>
+                <br/>
+                <small *ngIf="+room.discountedPrice > 0" class="text-muted m-t-8 d-inline-block discount-price">
+                  R -{{ room.discountedPrice }}
+                </small>
+                <small *ngIf="!room.discountedPrice || +room.discountedPrice <= 0" class="text-muted m-t-8 d-inline-block price">
+                  R 0
+                </small>
               </div>
               <h2 class="m-0 f-s-24">{{ room.roomNo }}</h2>
               <div class="room-details">
