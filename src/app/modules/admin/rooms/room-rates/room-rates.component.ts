@@ -147,9 +147,11 @@ export class RoomRatesComponent implements OnInit, OnDestroy {
         } else {
         //  debugger;
           this.updateRecord(result);
+          this.loadData();
         }
         this.refreshTable();
         this.toastr.success(`${action === 'add' ? 'Add' : 'Edit'} record successfully!`);
+        this.loadData();
       }
     });
   }

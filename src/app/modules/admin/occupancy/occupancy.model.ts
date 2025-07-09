@@ -32,6 +32,7 @@ export interface Occupancy {
   roomNo: number;
   weekendPrice: number;
   weekPrice: number;
+  discountedPrice: number;
   type: string;
   bed: string;
   occupants: string;
