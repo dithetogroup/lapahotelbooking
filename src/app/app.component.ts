@@ -7,6 +7,7 @@ import {
   Renderer2,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { StartupService } from '@core/services/startup.service';
 import { AuthService } from '@core/services/auth.service'; // adjust path as needed
 
