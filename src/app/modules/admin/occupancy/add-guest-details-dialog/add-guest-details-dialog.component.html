@@ -10,7 +10,55 @@
   <div mat-dialog-content>
     <mat-horizontal-stepper linear #stepper>
 
-      <!-- Step 1: Guest Info -->
+    <!-- Step 1: Regualr Guest Info -->
+    <mat-step [stepControl]="regularGuestTypeForm">
+      <form [formGroup]="regularGuestTypeForm">
+        <ng-template matStepLabel>Guest Type</ng-template>
+        <mat-label>Is this a regular guest?</mat-label>
+        <mat-radio-group formControlName="isRegularGuest">
+          <mat-radio-button [value]="true">Yes</mat-radio-button>
+          <mat-radio-button [value]="false">No</mat-radio-button>
+        </mat-radio-group>
+    
+        <!-- Show dropdown only if YES selected -->
+        <div *ngIf="regularGuestTypeForm.get('isRegularGuest')?.value === true" style="margin-top: 20px;">
+          <mat-form-field appearance="outline" class="w-100 full-width">
+            <mat-label>Select Regular Guest</mat-label>
+            <mat-select 
+              formControlName="selectedGuestId"
+              (openedChange)="onGuestDropdownOpen()" 
+              (selectionChange)="onRegularGuestSelected($event.value)">
+              <mat-option>
+                <input
+                matInput
+                placeholder="Search guests..."
+                [value]="guestSearchText"
+                (input)="onSearchInput($event)"
+                (click)="$event.stopPropagation()"
+              />
+              </mat-option>
+              <mat-option *ngFor="let guest of filteredRegularGuests" [value]="guest.id">
+                {{ guest.rg_name }} | {{ guest.rg_surname }} - {{guest.rg_account}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+    
+        <div class="d-flex justify-content-end">
+          <!-- If Yes: Only enable Next when a guest is selected -->
+          <button mat-stroked-button matStepperNext
+                  [disabled]="regularGuestTypeForm.get('isRegularGuest')?.value === true && !regularGuestTypeForm.get('selectedGuestId')?.value">
+            Next
+          </button>
+          <!-- If No: Enable Next always -->
+        </div>
+      </form>
+    </mat-step>
+    
+
+      
+
+      <!-- Step 2: Guest Info -->
       <mat-step [stepControl]="guestForm.get('guestInfoGroup')!">
         <form [formGroup]="guestInfoForm">
           <ng-template matStepLabel>Guest Info</ng-template>
@@ -101,14 +149,28 @@
             </div>
           </div>
           
-
+<!-- 
           <div class="d-flex justify-content-end">
             <button mat-stroked-button matStepperNext [disabled]="!guestForm.get('guestInfoGroup')?.valid">Next</button>
-          </div>
+          </div> -->
+
+            <div class="d-flex justify-content-end" style="gap: 1rem;">
+              <button mat-stroked-button color="accent"
+                type="button"
+                (click)="saveAsRegularClient()"
+                [disabled]="!guestInfoForm.valid || savingRegularClient">
+                <ng-container *ngIf="!savingRegularClient; else savingLoader">Save as Regular Client</ng-container>
+                <ng-template #savingLoader><mat-spinner diameter="20"></mat-spinner></ng-template>
+              </button>
+              <button mat-stroked-button matStepperNext [disabled]="!guestForm.get('guestInfoGroup')?.valid">Next</button>
+
+              <!-- <button mat-stroked-button matStepperNext [disabled]="!guestInfoForm.valid">Next</button> -->
+            </div>
+
         </form>
       </mat-step>
 
-      <!-- Step 2: Booking -->
+      <!-- Step 3: Booking -->
       <mat-step [stepControl]="bookingForm">
         <form [formGroup]="bookingForm">
 
@@ -188,7 +250,7 @@
         </form>
       </mat-step>
 
-      <!-- Step 3: Booking Summary -->
+      <!-- Step 4: Booking Summary -->
       <mat-step>
         <ng-template matStepLabel>Summary</ng-template>
        
@@ -235,7 +297,7 @@
       </mat-step>
 
 
-      <!-- Step 3: Payment -->
+      <!-- Step 5: Payment -->
       <mat-step>
         <form [formGroup]="guestForm" (ngSubmit)="onSubmit()">
           <ng-template matStepLabel>Payment</ng-template>

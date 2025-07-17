@@ -173,7 +173,7 @@ export const MY_DATE_FORMATS = {
       }
     
       this.dialog.open(GuestDetailsDialogComponent, {
-        width: '40vw',
+        width: '55vw',
         maxWidth: '100vw',
         data: { room },
         autoFocus: false,
@@ -182,7 +182,7 @@ export const MY_DATE_FORMATS = {
     
     openAddGuestDetailsDialog(room: Occupancy) {
       const dialogRef = this.dialog.open(AddGuestDetailsDialogComponent, {
-        width: '40vw',
+        width: '55vw',
         maxWidth: '100vw',
         data: {
           room,

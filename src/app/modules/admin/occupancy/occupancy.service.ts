@@ -106,6 +106,15 @@ export class OccupancyService {
     return this.http.get<any[]>(this.baseUrl + this.urlEndPoints.getPackages);
   }
 
+  getRegularGuest(): Observable<any[]> {
+    return this.http.get<any[]>(this.baseUrl + this.urlEndPoints.getRegularGuest);
+  }
+
+  addRegularGuest(data: any): Observable<any> {
+    return this.http.post<any>(this.baseUrl + this.urlEndPoints.addRegularGuest, data);
+  }
+  
+
   getOccupants(): Observable<any[]> {
     return this.http.get<any[]>(this.baseUrl + this.urlEndPoints.getOccupants);
   }

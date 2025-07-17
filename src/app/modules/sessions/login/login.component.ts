@@ -80,18 +80,18 @@ export class LoginComponent {
   }
 
   adminSet() {
-   // this.loginForm.get('username')?.setValue('adminssss');
-   // this.loginForm.get('password')?.setValue('admin');
+   // this.loginForm.get('username')?.setValue('Boni');
+   // this.loginForm.get('password')?.setValue('Mypassword');
 
-    this.loginForm.get('username')?.setValue('admin');
-    this.loginForm.get('password')?.setValue('admin');
+   // this.loginForm.get('username')?.setValue('admin');
+    //this.loginForm.get('password')?.setValue('admin');
   }
   employeeSet() {
-    this.loginForm.get('username')?.setValue('');
-    this.loginForm.get('password')?.setValue('');
+    //this.loginForm.get('username')?.setValue('');
+    //this.loginForm.get('password')?.setValue('');
 
-    // this.loginForm.get('username')?.setValue('employee');
-    // this.loginForm.get('password')?.setValue('employee');
+   this.loginForm.get('username')?.setValue('Boni');
+     this.loginForm.get('password')?.setValue('mypassword');
   }
   bookingSet() {
     this.loginForm.get('username')?.setValue('booking');

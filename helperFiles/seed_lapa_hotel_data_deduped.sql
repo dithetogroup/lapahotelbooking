@@ -242,7 +242,7 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
 
 
   INSERT INTO regular_guests (rg_account, rg_title, rg_name, rg_surname, rg_company, rg_email, rg_address,rg_phone) VALUES
-  (1001, 'Mr','Sipho','Mokoena','Mokoena Holdings', 'sipho@mokoenaholdings.co.za','123 Rose Ave,Sandton, JHB','0821234567'),
-  (1002, 'Mrs','Nomsa', 'Mabena','Ditheto Group','nomsa.mabena@gmail.com','45 Kingsway Rd, Randburg','0842345678');
+  (LHRSM1234, 'Mr','Sipho','Mokoena','Mokoena Holdings', 'sipho@mokoenaholdings.co.za','123 Rose Ave,Sandton, JHB','0821234567'),
+  (LHRNM2334, 'Mrs','Nomsa', 'Mabena','Ditheto Group','nomsa.mabena@gmail.com','45 Kingsway Rd, Randburg','0842345678');
 
 

@@ -32,6 +32,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { AuthService } from "@core/services/auth.service";
 import { User } from "@core/models/interface";
+import { MatRadioModule } from "@angular/material/radio";
 
 @Component({
   selector: "app-add-guest-details-dialog",
@@ -52,6 +53,7 @@ import { User } from "@core/models/interface";
     MatStepperModule,
     MatCheckboxModule,
     MatProgressSpinner,
+    MatRadioModule
   ],
   templateUrl: "./add-guest-details-dialog.component.html",
   styleUrl: "./add-guest-details-dialog.component.scss",
@@ -83,6 +85,14 @@ export class AddGuestDetailsDialogComponent {
   bookedDateRanges: { start: Date; end: Date }[] = [];
   user!: User;
   discountTotal: number = 0
+
+  //Regular guest
+  regularGuestTypeForm: FormGroup;
+  regularGuests: any[] = [];
+  filteredRegularGuests: any[] = [];
+  guestSearchText = '';
+  savingRegularClient = false;
+
 
   constructor(
     private fb: FormBuilder,
@@ -131,6 +141,13 @@ export class AddGuestDetailsDialogComponent {
         validators: this.utilsService.dateRangeValidator(), // ✅ Apply validator here
       }
     );
+     // Step 1: Regular guest select
+    this.regularGuestTypeForm = this.fb.group({
+      isRegularGuest: [null, Validators.required],
+      selectedGuestId: [null]
+    });
+
+
   }
   // ✅ Add these getters below constructor
   get guestInfoForm(): FormGroup {
@@ -141,15 +158,14 @@ export class AddGuestDetailsDialogComponent {
   }
 
   ngOnInit() {
-    this.auth
-      .user()
-      .pipe(
+    this.auth.user().pipe(
         tap((user) => (this.user = user)),
-        debounceTime(10)
-      )
-      .subscribe(() => this.cdr.detectChanges());
+        debounceTime(10)).subscribe(() => this.cdr.detectChanges());
 
     this.getPackages();
+
+    this.fetchRegularGuests();
+
     // this.getOccupants();
     this.getAvailableRooms();
 
@@ -379,6 +395,68 @@ export class AddGuestDetailsDialogComponent {
     );
   }
 
+
+  fetchRegularGuests(): void {
+    this.occupancyService.getRegularGuest().subscribe(
+      (response: any) => {
+        if (response.status === "success") {
+          this.regularGuests = response.data;
+          this.filteredRegularGuests = response.data;
+
+           console.log('packages', this.regularGuests);
+        } else {
+          this.toastr.warning("Failed to load guests.");
+        }
+      },
+      (error) => {
+        console.error("[ERROR] Failed to fetch guests:", error);
+        this.toastr.error(
+          "Something went wrong. Please contact the Super Admin."
+        );
+      }
+    );
+  }
+
+  filterRegularGuests() {
+    const search = this.guestSearchText.trim().toLowerCase();
+    this.filteredRegularGuests = this.regularGuests.filter(g =>
+      (`${g.rg_name} ${g.rg_surname} ${g.rg_email}`.toLowerCase().includes(search))
+    );
+  }
+
+ // In your component
+onRegularGuestSelected(guestId: number) {
+  const selected = this.regularGuests.find(g => g.id === guestId);
+  if (selected) {
+    this.guestInfoForm.patchValue({
+      guest_title: selected.rg_title,
+      guest_name: selected.rg_name,
+      guest_surname: selected.rg_surname,
+      guest_company: selected.rg_company,
+      guest_email: selected.rg_email,
+      guest_address: selected.rg_address,
+      guest_phone: selected.rg_phone,
+      // add more fields if needed
+    });
+  }
+}
+
+onSearchInput(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  this.guestSearchText = input.value;
+  this.filterRegularGuests();
+}
+
+
+
+  onGuestDropdownOpen() {
+    // Clear search when dropdown opens
+    this.guestSearchText = '';
+    this.filteredRegularGuests = this.regularGuests;
+  }
+
+
+
   getAvailableRooms(): void {
     this.occupancyService.getAvailableRooms().subscribe(
       (res: any) => {
@@ -390,6 +468,57 @@ export class AddGuestDetailsDialogComponent {
       }
     );
   }
+
+
+
+  saveAsRegularClient() {
+    if (!this.guestInfoForm.valid) return;
+  
+    this.savingRegularClient = true;
+  
+    const { guest_name, guest_surname, guest_email, guest_phone, guest_address, guest_title, guest_company } = this.guestInfoForm.value;
+  
+    // Generate rg_account (e.g. LHR JM 071722)
+    const now = new Date();
+    const pad = (n: number) => n < 10 ? '0' + n : n;
+    const month = pad(now.getMonth() + 1);
+    const date = pad(now.getDate());
+    const hours = pad(now.getHours());
+    const mins = pad(now.getMinutes());
+    const acc = `LHR${guest_name[0].toUpperCase()}${guest_surname[0].toUpperCase()}${month}${date}${hours}${mins}`;
+  
+    const data = {
+      rg_account: acc,
+      rg_title: guest_title,
+      rg_name: guest_name,
+      rg_surname: guest_surname,
+      rg_company: guest_company,
+      rg_email: guest_email,
+      rg_address: guest_address,
+      rg_phone: guest_phone
+    };
+  
+    debugger;
+
+    this.occupancyService.addRegularGuest(data).subscribe(
+      (result) => {
+        this.savingRegularClient = false;
+        if (result.status === 'success') {
+          this.toastr.success(result.message || 'Client saved as regular client!');
+        } else if (result.status === 'client_exists') {
+          this.toastr.warning(result.message || 'A client with this email or phone already exists.');
+        } else {
+          this.toastr.error(result.message || 'Could not save client. Try again.');
+        }
+      },
+      (err) => {
+        this.savingRegularClient = false;
+        this.toastr.error('Could not save client. Try again.');
+      }
+    );
+  }
+
+  
 
   getRoomDetails(roomNo: number): any {
     return this.allAvailableRooms.find((r) => r.room_no === roomNo);
