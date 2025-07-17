@@ -3,4 +3,24 @@
     display: block !important;
     margin-bottom: 20px;
   }
+  #cdk-overlay-0 {
+
+  }
+
+  .modalHeader {
+    background-color: orange;
+    color: white;
+  }
+
+  .cdk-overlay-pane{
+    .mat-mdc-dialog-panel {
+      width: 50vw !important;
+    }
+  }
+
+  .mdc-dialog--open .mat-mdc-dialog-surface, .mdc-dialog--closing .mat-mdc-dialog-surface {
+    transform: none;
+    width: 55vw !important;
+}
+
   

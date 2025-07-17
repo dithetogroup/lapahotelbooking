@@ -166,7 +166,7 @@ SET FOREIGN_KEY_CHECKS = 1;
     -- Guest Details
     CREATE TABLE regular_guests (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        rg_account INT,
+        rg_account VARCHAR(100),
         rg_title VARCHAR(100),
         rg_name VARCHAR(100),
         rg_surname VARCHAR(100),

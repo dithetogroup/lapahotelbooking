@@ -64,6 +64,17 @@ export const APP_ROUTE: Route[] = [
         },
       },
       {
+        path: 'clients',
+        canActivate: [AuthGuard],
+        loadChildren: () =>
+          import('../modules/admin/clients/clients.routes').then(
+            (m) => m.CLIENTS_ROUTE
+          ),
+        data: {
+          role: ['ADMIN', 'EMPLOYEE'],
+        },
+      },
+      {
         path: 'staffs',
         canActivate: [AuthGuard],
         loadChildren: () =>

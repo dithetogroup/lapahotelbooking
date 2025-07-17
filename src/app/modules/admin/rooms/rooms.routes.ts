@@ -5,6 +5,7 @@ import { AddRoomComponent } from './add-room/add-room.component';
 import { EditRoomComponent } from './edit-room/edit-room.component';
 import { AllRoomsComponent } from './all-rooms/all-rooms.component';
 import { RoomTypesComponent } from './room-types/room-types.component';
+import { ClientsComponent } from '../clients/clients.component';
 
 export const ROOMS_ROUTE: Route[] = [
   {
