@@ -119,7 +119,6 @@ export class EditRegularClientDialogComponent {
 
   createForm(): FormGroup {
     const namePattern = "^[A-Za-z\\s'-]{1,50}$";
-
     return this.fb.group({
       rg_account: [
         { value: this.regularClient.rg_account || "", disabled: true },

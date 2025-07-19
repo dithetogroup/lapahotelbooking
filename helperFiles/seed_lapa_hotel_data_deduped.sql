@@ -174,20 +174,18 @@ INSERT INTO room_details (bed_type_id, room_details_list) VALUES (1, '2 Adults 1
 INSERT INTO room_details (bed_type_id, room_details_list) VALUES (1, '2 Adults 1 Child');
 INSERT INTO room_details (bed_type_id, room_details_list) VALUES (1, '2 Adults 1 Child ');
 
-
-
     -- Seed Packages
-    INSERT INTO packages (package_name, package_price) VALUES 
-    ('BreakFast', 180.00),
-    ('Dinner', 180.00),
-    ('Lunch', 180.00),
-    ('Anti Stress', 200.00),
-    ('Hot Stone Half Body(30m)', 300.00),
-    ('Hot Stone Full Body (45m)', 390.00),
-    ('Hot Stone Full Body (60m)', 530.00),
-    ('Facial (45m)', 400.00),
-    ('Couples Full Body(45m)', 650.00),
-    ('None', 0.00);
+    INSERT INTO packages (package_name, package_type, package_time, package_price) VALUES 
+    ('BreakFast', 'breakfast', Null, 180.00),
+    ('Dinner', 'dinner', Null,180.00),
+    ('Lunch', 'lunch', Null, 180.00),
+    ('Anti Stress', 'spa', 30, 200.00),
+    ('Hot Stone Half Body(30m)', 'spa', 30, 300.00),
+    ('Hot Stone Full Body (45m)','spa', 45, 390.00),
+    ('Hot Stone Full Body (60m)', 'spa', 60, 530.00),
+    ('Facial (45m)', 'spa', 45, 400.00),
+    ('Couples Full Body(45m)','spa', 45, 650.00),
+    ('None', 'none', NULL, 0.00);
 
 -- 1. Add Users
 INSERT INTO users (id, username, password, full_name, surname, email)
@@ -240,6 +238,11 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
   (2, 4), -- EMPLOYEE: canEdit
   (2, 5); -- EMPLOYEE: canRead
 
+  INSERT INTO spa_therapists (therapists_title, therapists_name, therapists_surname, therapists_contacts)
+VALUES
+  ('Ms', 'Lerato', 'Kgopisa', '0821112222'),
+  ('Ms', 'Mokgadi', 'Thapedi', '0823334444'),
+  ('Ms', 'Motsaro', 'Kgoroshi', '0825556666');
 
 INSERT INTO regular_guests (
     rg_account,
@@ -263,3 +266,22 @@ INSERT INTO regular_guests (
 ('LHRMG071725', 'Dr', 'Mandla', 'Gumede', 'Gumede & Partners', 'mandla.gumede@gumede.co.za', '44 4th St, Parktown', '0844444444', '0132468101', 'Phumzile Gwala', 'www.gumedeandpartners.com', 'Company', '22345', 'Private'),
 ('LHRKB071726', 'Prof', 'Kabelo', 'Bapela', 'Bapela Attorneys', 'kabelo@bapelaattorneys.co.za', '9 West St, Pretoria', '0855555555', '0143579111', 'Katlego Moagi', 'www.bapelaattorneys.co.za', 'Individual', '22345', 'Private');
 
+INSERT INTO spa_bookings (
+    package_id, therapist_id, spbooking_title, spbooking_name, spbooking_surname, spbooking_email,
+    spbooking_contact, spbooking_addtionalinfo, spbooking_allergies, spbooking_reason,
+    spbooking_noofvisitors, spbooking_date, spbooking_promotions, spbooking_bookedby
+)
+VALUES
+  (3, 1, 'Mr', 'David', 'Molefe', 'david.molefe@email.com', '0821234567', 'None', 'Nuts', 'Relaxation', 1, '2025-07-20', false, 'Admin'),
+  (4, 2, 'Ms', 'Nadia', 'Sithole', 'nadia.sithole@email.com', '0822345678', 'Bring towel', '', 'Back pain', 1, '2025-07-21', true, 'Receptionist'),
+  (7, 3, 'Mrs', 'Lindiwe', 'Baloyi', 'lindiwe.baloyi@email.com', '0823456789', '', '', 'Sports injury', 2, '2025-07-22', false, 'Admin');
+
+
+INSERT INTO venue_bookings (
+    package_id, vbooking_title, vbooking_name, vbooking_surname, vbooking_email, vbooking_contact,
+    vbooking_specialrequest, vbooking_reason, vbooking_noofvisitors, vbooking_startdate,
+    vbooking_enddate, vbooking_promotions, vbooking_bookedby
+)
+VALUES
+  (6, 'Mr', 'Peter', 'Moagi', 'peter.moagi@email.com', '0825566778', 'Vegan catering', 'Birthday Party', 40, '2025-08-01', '2025-08-01', true, 'Admin'),
+  (2, 'Ms', 'Thembi', 'Mashaba', 'thembi.mashaba@email.com', '0829988776', '', 'Business Conference', 20, '2025-08-05', '2025-08-06', false, 'Admin');

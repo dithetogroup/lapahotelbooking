@@ -12,7 +12,9 @@ import { MenuService } from '@core';
   providedIn: 'root',
 })
 export class AuthService {
-  user$ = new BehaviorSubject<User>({});
+  //user$ = new BehaviorSubject<User>({});
+  user$ = new BehaviorSubject<User>(this.store.get('currentUser') || {});
+
 
   private change$ = merge(
     this.tokenService.change(),
