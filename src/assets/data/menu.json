@@ -29,13 +29,13 @@
     },
     {
       "route": "bookings",
-      "name": "Bookings",
+      "name": "Room Bookings",
       "type": "sub",
       "icon": "book-open",
       "children": [
         {
           "route": "all-bookings",
-          "name": "All Bookings",
+          "name": "All Room Bookings",
           "type": "link"
         },
         {
@@ -56,12 +56,12 @@
         },
         {
           "route": "cancel-bookings",
-          "name": "Cancel Bookings",
+          "name": "Cancel Room Bookings",
           "type": "link"
         },
         {
           "route": "bookings-invoices",
-          "name": "Bookings Invoices",
+          "name": "Room Booking Invoices",
           "type": "link"
         }
       ]
@@ -120,6 +120,24 @@
       "name": "Regular Clients",
       "type": "link",
       "icon": "assignment"
+    },
+    {
+      "route": "spa-bookings",
+      "name": "Boni Spa",
+      "type": "sub",
+      "icon": "cleaning_services",
+      "children": [
+        {
+          "route": "spa-bookings",
+          "name": "Spa Bookings",
+          "type": "link"
+        },
+        {
+          "route": "spa-therapists",
+          "name": "Spa Therepists",
+          "type": "link"
+        }
+      ]
     },
     {
       "route": "staffs",

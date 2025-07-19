@@ -1,0 +1,144 @@
+<div class="dialogContainer">
+    <div class="modalHeader">
+        <div class="avatarDetails">
+            <div class="modalTitle">{{ dialogTitle }}</div>
+        </div>
+        <button mat-icon-button (click)="dialogRef.close()" class="modal-close-button" aria-label="Close dialog">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div mat-dialog-content>
+        <form class="form-field-full" [formGroup]="spaBookingForm">
+            <div class="row m-b-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Title</mat-label>
+                        <mat-select formControlName="spbooking_title" required>
+                            <mat-option value="">Select Title</mat-option>
+                            <mat-option value="Mr">Mr</mat-option>
+                            <mat-option value="Mrs">Mrs</mat-option>
+                            <mat-option value="Ms">Ms</mat-option>
+                            <mat-option value="Dr">Dr</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Name</mat-label>
+                        <input matInput formControlName="spbooking_name" required>
+                        <mat-error *ngIf="spaBookingForm.get('spbooking_name')?.hasError('required')">Name is required</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row m-b-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Surname</mat-label>
+                        <input matInput formControlName="spbooking_surname" required>
+                        <mat-error *ngIf="spaBookingForm.get('spbooking_surname')?.hasError('required')">Surname is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Email</mat-label>
+                        <input matInput type="email" formControlName="spbooking_email" required>
+                        <mat-error *ngIf="spaBookingForm.get('spbooking_email')?.hasError('required')">Email is required</mat-error>
+                        <mat-error *ngIf="spaBookingForm.get('spbooking_email')?.hasError('email')">Invalid email address</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row m-b-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Contact</mat-label>
+                        <input matInput formControlName="spbooking_contact" maxlength="11" required>
+                        <mat-error *ngIf="spaBookingForm.get('spbooking_contact')?.hasError('required')">Contact is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Booking Date</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="spbooking_date" required>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="spaBookingForm.get('spbooking_date')?.hasError('required')">
+                            Booking date is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                
+            </div>
+            <div class="row m-b-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>No. of Visitors</mat-label>
+                        <input matInput type="number" formControlName="spbooking_noofvisitors" required min="1">
+                        <mat-error *ngIf="spaBookingForm.get('spbooking_noofvisitors')?.hasError('required')">Number of visitors is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Package</mat-label>
+                        <mat-select formControlName="package_id" required multiple>
+                            <mat-option *ngFor="let pkg of packages" [value]="pkg.id">
+                              {{ pkg.package_name }} (R{{ pkg.package_price | number:'1.2-2' }})
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="spaBookingForm.get('package_id')?.hasError('required')">Package is required</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+
+            <div class="row m-b-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Therapist</mat-label>
+                        <mat-select formControlName="therapist_id" required>
+                            <mat-option value="">Select Therapist</mat-option>
+                            <mat-option *ngFor="let t of therapists" [value]="t.id">
+                                {{ t.therapists_name }} {{ t.therapists_surname }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="spaBookingForm.get('therapist_id')?.hasError('required')">Therapist is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Reason for Booking</mat-label>
+                        <mat-select formControlName="spbooking_reason" required>
+                          <mat-option *ngFor="let reason of reasonsForSpaBooking" [value]="reason">
+                            {{ reason }}
+                          </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="spaBookingForm.get('spbooking_reason')?.hasError('required')">
+                          Reason is required
+                        </mat-error>
+                      </mat-form-field>
+                      
+                </div>
+            </div>
+            <div class="row m-b-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Allergies</mat-label>
+                        <input matInput formControlName="spbooking_allergies">
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Booked By</mat-label>
+                        <input matInput formControlName="spbooking_bookedby">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row m-b-24">
+                <div class="col-sm-12 text-right">
+                    <button mat-raised-button color="primary btn" [disabled]="!spaBookingForm.valid" (click)="submit()">Save</button>
+                    <button mat-raised-button color="warn" (click)="onNoClick()" type="button">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

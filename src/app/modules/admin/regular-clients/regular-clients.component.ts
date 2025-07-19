@@ -155,7 +155,6 @@ export class RegularClientsComponent {
     });
   }
 
-  
 
   openDialog(action: 'add' | 'edit', data?: RegularClients) {
     const dialogRef = this.dialog.open(EditRegularClientDialogComponent, {

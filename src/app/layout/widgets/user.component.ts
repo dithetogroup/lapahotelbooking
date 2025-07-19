@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'app-user',
@@ -26,9 +27,10 @@ import { MatButtonModule } from '@angular/material/button';
         width="24"
         alt="avatar"
       /> -->
-      <span class="m-x-8">{{ user.name }}</span>
-      <div class="avatar r-full initials-avatar">{{ initials }}</div>
+      <!-- <span class="m-x-8">{{ user.name }}</span> -->
+      <span class="m-x-8">{{ (auth.user$ | async)?.name }}</span>
 
+      <div class="avatar r-full initials-avatar">{{ initials }}</div>
     </button>
 
     <mat-menu #menu="matMenu" class="profileMenu">
@@ -74,6 +76,7 @@ import { MatButtonModule } from '@angular/material/button';
         RouterLink,
         MatIconModule,
         TranslateModule,
+        AsyncPipe
     ]
 })
 export class UserComponent implements OnInit {
@@ -81,30 +84,33 @@ export class UserComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private auth: AuthService,
+    public auth: AuthService,
     private cdr: ChangeDetectorRef,
     private settings: SettingsService
   ) {}
 
-  ngOnInit(): void {
-    this.auth
-      .user()
-      .pipe(
+  ngOnInit(): void {this.auth.user().pipe(
         tap((user) => (this.user = user)),
         debounceTime(10)
-      )
-      .subscribe(() => this.cdr.detectChanges());
+      ).subscribe(() => this.cdr.detectChanges());
   }
 
+  // get initials(): string {
+  //   // fallback to empty string if no user or missing fields
+  //   if (!this.user) return '';
+  //   const first = (this.user['full_name'] || '').charAt(0).toUpperCase();
+  //   const last = (this.user['surname'] || '').charAt(0).toUpperCase();
+  //   return first + last;
+  // }
+
   get initials(): string {
-    // fallback to empty string if no user or missing fields
     if (!this.user) return '';
-    const first = (this.user['full_name'] || '').charAt(0).toUpperCase();
+    const first = (this.user['full_name'] || this.user['name'] || '').charAt(0).toUpperCase();
     const last = (this.user['surname'] || '').charAt(0).toUpperCase();
     return first + last;
   }
   
-
+  
   logout() {
     this.auth.logout();
   }

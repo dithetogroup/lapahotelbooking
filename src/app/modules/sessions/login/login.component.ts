@@ -90,7 +90,7 @@ export class LoginComponent {
     //this.loginForm.get('username')?.setValue('');
     //this.loginForm.get('password')?.setValue('');
 
-   this.loginForm.get('username')?.setValue('Boni');
+    this.loginForm.get('username')?.setValue('Boni');
      this.loginForm.get('password')?.setValue('mypassword');
   }
   bookingSet() {

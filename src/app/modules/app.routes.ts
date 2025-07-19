@@ -53,6 +53,17 @@ export const APP_ROUTE: Route[] = [
         },
       },
       {
+        path: 'spa-bookings',
+        canActivate: [AuthGuard], // optional
+        loadChildren: () =>
+          import('../modules/admin/bonispa/spa-bookings/spa.routes').then(
+            (m) => m.SPA_ROUTE
+          ),
+        data: {
+          role: ['ADMIN', 'BOOKING', 'EMPLOYEE'],
+        },
+      },
+      {
         path: 'bookings',
         canActivate: [AuthGuard],
         loadChildren: () =>

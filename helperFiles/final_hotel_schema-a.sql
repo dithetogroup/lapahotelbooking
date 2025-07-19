@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS rooms;
 DROP TABLE IF EXISTS room_types;
 DROP TABLE IF EXISTS bed_types;
 DROP TABLE IF EXISTS packages;
+DROP TABLE IF EXISTS regular_guests;
 
 -- RBAC relationships
 DROP TABLE IF EXISTS user_roles;
@@ -19,6 +20,9 @@ DROP TABLE IF EXISTS role_permissions;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS permissions;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS spa_bookings;
+DROP TABLE IF EXISTS venue_bookings;
+DROP TABLE IF EXISTS spa_therapists;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -58,13 +62,76 @@ SET FOREIGN_KEY_CHECKS = 1;
         FOREIGN KEY (room_type_id) REFERENCES room_types(id)
     );
 
+
     -- Packages
     CREATE TABLE packages (
         id INT AUTO_INCREMENT PRIMARY KEY,
         package_name VARCHAR(100),
+        package_type VARCHAR(50),
+        package_time INT,           -- time in minutes
         package_price DECIMAL(10,2),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    );
+
+   
+
+        -- Venue Hire
+    CREATE TABLE venue_bookings (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        package_id INT,   -- Foreign key to packages.id
+        vbooking_title VARCHAR(100),
+        vbooking_name VARCHAR(100),
+        vbooking_surname VARCHAR(100),
+        vbooking_email VARCHAR(100),
+        vbooking_contact VARCHAR(100),
+        vbooking_specialrequest VARCHAR(100),
+        vbooking_reason VARCHAR(100),
+        vbooking_noofvisitors INT,
+        vbooking_startdate DATE,
+        vbooking_enddate DATE,
+        vbooking_promotions BOOLEAN,
+        vbooking_bookedby VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT fk_venue_package FOREIGN KEY (package_id) REFERENCES packages(id)
+
+    );
+
+
+    -- Spa Attandants
+    CREATE TABLE spa_therapists (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        therapists_title VARCHAR(100),
+        therapists_name VARCHAR(100),
+        therapists_surname VARCHAR(100),
+        therapists_contacts VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    );
+
+
+     -- Spa Bookings
+    CREATE TABLE spa_bookings (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        package_id INT,   -- Foreign key to packages.id
+        therapist_id INT,  -- Foreign key to spa_therapists.id
+        spbooking_title VARCHAR(100),
+        spbooking_name VARCHAR(100),
+        spbooking_surname VARCHAR(100),
+        spbooking_email VARCHAR(100),
+        spbooking_contact VARCHAR(100),
+        spbooking_addtionalinfo VARCHAR(100),
+        spbooking_allergies VARCHAR(100),
+        spbooking_reason VARCHAR(100),
+        spbooking_noofvisitors INT,
+        spbooking_date DATE,
+        spbooking_promotions BOOLEAN,
+        spbooking_bookedby VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT fk_spa_package FOREIGN KEY (package_id) REFERENCES packages(id),
+        CONSTRAINT fk_spa_therapist FOREIGN KEY (therapist_id) REFERENCES spa_therapists(id)
     );
 
     -- Room Details

@@ -28,11 +28,17 @@ export const environment = {
     logoutUser: '/logout.php',
     getAllRoomRates: '/get-all-rooms-rates.php',
     updateRoomRates: '/update-room-rates.php',
+    //Regular guests
     getRegularGuest: '/get-regular-guests.php',
-    //addRegularGuest: '/add-regular-guest.php',
     updateRegularClient: '/update-regular-client.php',
     addRegularClient: '/add-regular-client.php',
-    deleteRegularClient: '/delete-regular-client.php'
+    deleteRegularClient: '/delete-regular-client.php',
+    //spa
+    getSpaBookings: '/get-spa-bookings.php',
+    deleteSpaBooking: '/delete-spa-booking.php',
+    updateSpaBooking: '/update-spa-booking.php',
+    addSpaBooking: '/add-spa-booking.php',
+    getSpaTherapists: '/get-spa-therapists.php',
 
   }
 };
