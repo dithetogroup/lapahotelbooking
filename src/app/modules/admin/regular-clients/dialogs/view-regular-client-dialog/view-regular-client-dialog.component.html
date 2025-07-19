@@ -1,0 +1,36 @@
+<div class="dialogContainer">
+    <div class="modalHeader">
+      <div class="avatarDetails">
+        <div class="modalTitle">View Regular Client</div>
+      </div>
+      <button mat-icon-button (click)="close()" class="modal-close-button" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div mat-dialog-content>
+      <div class="client-details-grid">
+        <!-- Left Column -->
+        <div class="col">
+          <div class="field"><span>Account:</span> {{ client.rg_account }}</div>
+          <div class="field"><span>Title:</span> {{ client.rg_title }}</div>
+          <div class="field"><span>Full Names:</span> {{ client.rg_name }} {{ client.rg_surname }}</div>
+          <div class="field"><span>Phone:</span> {{ client.rg_phone }}</div>
+          <div class="field"><span>Email:</span> {{ client.rg_email }}</div>
+          <div class="field"><span>Address:</span> {{ client.rg_address }}</div>
+          <div class="field"><span>Liable for Payment:</span> {{ client.rg_isliable }}</div>
+        </div>
+        <!-- Right Column -->
+        <div class="col">
+          <div class="field"><span>Company Name:</span> {{ client.rg_company }}</div>
+          <div class="field"><span>Company Type:</span> {{ client.rg_company_type }}</div>
+          <div class="field"><span>Contact Person:</span> {{ client.rg_company_person }}</div>
+          <div class="field"><span>Company Phone:</span> {{ client.rg_company_phone }}</div>
+          <div class="field"><span>Vat Number:</span> {{ client.rg_company_vat }}</div>
+          <div class="field"><span>Company Website:</span> {{ client.rg_company_website }}</div>
+        </div>
+      </div>
+      <div class="text-right" style="margin-top: 20px;">
+        <button mat-raised-button color="primary" (click)="close()">Close</button>
+      </div>
+    </div>
+  </div>

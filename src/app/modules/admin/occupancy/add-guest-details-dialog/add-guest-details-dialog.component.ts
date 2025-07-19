@@ -447,14 +447,11 @@ onSearchInput(event: Event): void {
   this.filterRegularGuests();
 }
 
-
-
   onGuestDropdownOpen() {
     // Clear search when dropdown opens
     this.guestSearchText = '';
     this.filteredRegularGuests = this.regularGuests;
   }
-
 
 
   getAvailableRooms(): void {
@@ -468,8 +465,6 @@ onSearchInput(event: Event): void {
       }
     );
   }
-
-
 
   saveAsRegularClient() {
     if (!this.guestInfoForm.valid) return;
@@ -498,9 +493,7 @@ onSearchInput(event: Event): void {
       rg_phone: guest_phone
     };
   
-    debugger;
-
-    this.occupancyService.addRegularGuest(data).subscribe(
+    this.occupancyService.addRegularClient(data).subscribe(
       (result) => {
         this.savingRegularClient = false;
         if (result.status === 'success') {

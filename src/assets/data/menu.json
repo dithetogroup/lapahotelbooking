@@ -116,7 +116,7 @@
      
     },
     {
-      "route": "clients",
+      "route": "regular-clients",
       "name": "Regular Clients",
       "type": "link",
       "icon": "assignment"

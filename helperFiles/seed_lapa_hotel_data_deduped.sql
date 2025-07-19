@@ -241,8 +241,25 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
   (2, 5); -- EMPLOYEE: canRead
 
 
-  INSERT INTO regular_guests (rg_account, rg_title, rg_name, rg_surname, rg_company, rg_email, rg_address,rg_phone) VALUES
-  (LHRSM1234, 'Mr','Sipho','Mokoena','Mokoena Holdings', 'sipho@mokoenaholdings.co.za','123 Rose Ave,Sandton, JHB','0821234567'),
-  (LHRNM2334, 'Mrs','Nomsa', 'Mabena','Ditheto Group','nomsa.mabena@gmail.com','45 Kingsway Rd, Randburg','0842345678');
-
+INSERT INTO regular_guests (
+    rg_account,
+    rg_title,
+    rg_name,
+    rg_surname,
+    rg_company,
+    rg_email,
+    rg_address,
+    rg_phone,
+    rg_company_phone,
+    rg_company_person,
+    rg_company_website,
+    rg_isliable,
+    rg_company_vat,
+    rg_company_type
+) VALUES
+('LHRJM071722', 'Mr', 'John', 'Mokoena', 'Mokoena Holdings', 'john@mokoena.co.za', '123 Rose Ave, Sandton, JHB', '0821234567', '0113456789', 'Lerato Nkosi', 'www.mokoenaholdings.co.za', 'Company', '22345', 'Goverment'),
+('LHRSK071723', 'Mrs', 'Sarah', 'Khumalo', 'Khumalo Trading', 'sarah@khumalo.com', '22 Oxford Rd, Randburg', '0822222222', '0109876543', 'Sipho Nkosi', 'www.khumalotrading.com', 'Company', '22345','Private'),
+('LHRMJ071724', 'Ms', 'Mary', 'Jansen', 'Jansen Consulting', 'mary.jansen@consulting.com', '789 Jan Smuts Ave, Rosebank', '0833333333', '0123456789', 'Johannes Zulu', 'www.jansenconsult.com', 'Individual', '22345','Government'),
+('LHRMG071725', 'Dr', 'Mandla', 'Gumede', 'Gumede & Partners', 'mandla.gumede@gumede.co.za', '44 4th St, Parktown', '0844444444', '0132468101', 'Phumzile Gwala', 'www.gumedeandpartners.com', 'Company', '22345', 'Private'),
+('LHRKB071726', 'Prof', 'Kabelo', 'Bapela', 'Bapela Attorneys', 'kabelo@bapelaattorneys.co.za', '9 West St, Pretoria', '0855555555', '0143579111', 'Katlego Moagi', 'www.bapelaattorneys.co.za', 'Individual', '22345', 'Private');
 

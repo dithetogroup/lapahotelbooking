@@ -68,7 +68,6 @@ import { ToastrService } from 'ngx-toastr';
     MatProgressSpinnerModule,
     MatMenuModule,
     MatPaginatorModule,
-    DatePipe,
   ],
   templateUrl: './room-rates.component.html',
   styleUrls: ['./room-rates.component.scss']

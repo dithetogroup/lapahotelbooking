@@ -87,4 +87,9 @@
   .contact-sidenav-container .contact-sidenav .contact-filter-menu {
     background: map.get(map.get($theme, background), base);
   }
+
+  .modalHeader {
+    background-color: orange;
+    color: white;
+}
 }

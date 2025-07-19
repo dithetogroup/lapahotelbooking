@@ -5,7 +5,7 @@
     <div class="table-header-toolbar">
       <div class="row">
         <div class="col-sm-8">
-          <span class="table-header">Room Types</span>
+          <span class="table-header">Regular Clients</span>
           <mat-form-field appearance="outline" class="search-box">
             <mat-label class="search-label">Search...</mat-label>
             <input #filter (keyup)="applyFilter($event)" matInput type="text">
@@ -24,14 +24,14 @@
               <mat-select #select [(ngModel)]="filter.value" style="width: 200px; display: table;"
                 class="column-filter">
                 <span class="table-column-label">Show/Hide Column</span>
-                @for (cd of columnDefinitions; track cd) {
+                <ng-container *ngFor="let cd of columnDefinitions">
                   <mat-option>
                     <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="cd.visible"
                       color="primary">
                       {{ cd.label }}
                     </mat-checkbox>
                   </mat-option>
-                }
+                </ng-container>
               </mat-select>
             </button>
             <button mat-icon-button (click)="addNew()" class="tbl-header-btn text-green" matTooltip="Add">
@@ -71,28 +71,13 @@
             </mat-cell>
           </ng-container>
 
-          <!-- Dynamic Columns -->
-          @for (column of columnDefinitions; track column) {
-            @if (column.type !== 'checkBox' && column.type !== 'actionBtn') {
-              <ng-container [matColumnDef]="column.def">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.label }}</mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                  <span *ngIf="column.type === 'number'">
-                    <ng-container *ngIf="column.def === 'discountedRate'">
-                      -R{{ row[column.def] }}
-                    </ng-container>
-                    <ng-container *ngIf="column.def !== 'discountedRate'">
-                      R{{ row[column.def] }}
-                    </ng-container>
-                  </span>
-                  <span *ngIf="column.type !== 'number'">
-                    {{ row[column.def] }}
-                  </span>
-                </mat-cell>
-                
-               </ng-container>
-            }
-          }
+          <!-- Dynamic Columns for RegularClients -->
+          <ng-container *ngFor="let column of columnDefinitions" [matColumnDef]="column.def">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.label }}</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+              {{ row[column.def] }}
+            </mat-cell>
+          </ng-container>
 
           <!-- Actions Column -->
           <ng-container matColumnDef="actions">
@@ -101,6 +86,11 @@
               <button mat-icon-button color="accent" (click)="$event.stopPropagation(); editCall(row)">
                 <app-feather-icons [icon]="'edit'" class="tbl-fav-edit"></app-feather-icons>
               </button>
+
+              <button mat-icon-button color="accent" (click)="$event.stopPropagation(); viewCall(row)">
+                <mat-icon>pageview</mat-icon>
+              </button>
+
               <button mat-icon-button color="accent" (click)="$event.stopPropagation(); deleteItem(row)">
                 <app-feather-icons [icon]="'trash-2'" class="tbl-fav-delete"></app-feather-icons>
               </button>
@@ -112,11 +102,9 @@
         </table>
       </div>
 
-      @if (isLoading) {
-        <div class="tbl-spinner">
-          <mat-progress-spinner color="primary" [diameter]="40" mode="indeterminate"></mat-progress-spinner>
-        </div>
-      }
+      <div *ngIf="isLoading" class="tbl-spinner">
+        <mat-progress-spinner color="primary" [diameter]="40" mode="indeterminate"></mat-progress-spinner>
+      </div>
 
       <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
