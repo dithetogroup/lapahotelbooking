@@ -1,0 +1,190 @@
+<div class="dialogContainer">
+    <div class="modalHeader">
+        <div class="avatarDetails">
+            <div class="modalTitle">{{ dialogTitle }}</div>
+        </div>
+        <button mat-icon-button (click)="dialogRef.close()" class="modal-close-button" aria-label="Close dialog">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div mat-dialog-content>
+        <form class="form-field-full" [formGroup]="regularClientForm">
+            <div class="row m-b-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Account</mat-label>
+                        <input matInput formControlName="rg_account" readonly>
+                    </mat-form-field>
+                </div>
+                   <!-- Individual  Information Fieldset -->
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Title</mat-label>
+                        <mat-select formControlName="rg_title">
+                            <mat-option value="">Select Title</mat-option>
+                            <mat-option value="Mr">Mr</mat-option>
+                            <mat-option value="Mrs">Mrs</mat-option>
+                            <mat-option value="Ms">Ms</mat-option>
+                            <mat-option value="Dr">Dr</mat-option>
+                            <mat-option value="Prof">Prof</mat-option>
+                            <mat-option value="Rev">Rev</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row m-b-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Name</mat-label>
+                        <input matInput formControlName="rg_name" required>
+                        <mat-error *ngIf="regularClientForm.get('rg_name')?.hasError('required')">Name is
+                            required</mat-error>
+                            <mat-error *ngIf="regularClientForm.get('rg_name')?.hasError('pattern')">
+                                Name must contain only letters, spaces, apostrophes, or hyphens.
+                              </mat-error>
+                              <mat-error *ngIf="regularClientForm.get('rg_name')?.hasError('maxlength')">
+                                Name cannot exceed 50 characters.
+                              </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Surname</mat-label>
+                        <input matInput formControlName="rg_surname" required>
+                        <mat-error *ngIf="regularClientForm.get('rg_surname')?.hasError('required')">Surname is
+                            required</mat-error>
+                            <mat-error *ngIf="regularClientForm.get('rg_surname')?.hasError('pattern')">
+                                Surname must contain only letters, spaces, apostrophes, or hyphens.
+                              </mat-error>
+                              <mat-error *ngIf="regularClientForm.get('rg_surname')?.hasError('maxlength')">
+                                Surname cannot exceed 50 characters.
+                              </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row m-b-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Phone</mat-label>
+                        <input matInput formControlName="rg_phone" maxlength="11">
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Email</mat-label>
+                        <input matInput type="email" formControlName="rg_email" required>
+                        <mat-error *ngIf="regularClientForm.get('rg_email')?.hasError('required')">Email is
+                            required</mat-error>
+                        <mat-error *ngIf="regularClientForm.get('rg_email')?.hasError('email')">Invalid email
+                            address</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row m-b-24">
+                <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Address</mat-label>
+                        <textarea matInput formControlName="rg_address" rows="2"></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Liable for Account Payment </mat-label>
+                            <mat-select formControlName="rg_isliable">
+                                <mat-option value="Individual">Individual</mat-option>
+                                <mat-option value="Company">Company</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Company Information Fieldset -->
+            <fieldset
+            class="company-fieldset"
+            *ngIf="regularClientForm.get('rg_isliable')?.value === 'Company'"
+            style="margin-top: 24px; border: 1px solid #ddd; border-radius: 8px; padding: 16px;">
+                <legend style="padding: 0 10px;">Company Information</legend>
+
+                <div class="row m-b-24">
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Company Name</mat-label>
+                            <input matInput formControlName="rg_company" maxlength="50">
+                            <mat-error *ngIf="regularClientForm.get('rg_company')?.hasError('required')">Company Name is required</mat-error>
+                            <mat-error *ngIf="regularClientForm.get('rg_company')?.hasError('pattern')">
+                                Company Name must contain only letters, spaces, apostrophes, or hyphens.
+                              </mat-error>
+                              <mat-error *ngIf="regularClientForm.get('rg_company')?.hasError('maxlength')">
+                                Company Name cannot exceed 50 characters.
+                              </mat-error>
+
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Company Type</mat-label>
+                            <mat-select formControlName="rg_company_type">
+                                <mat-option value="Private">Private</mat-option>
+                                <mat-option value="Government">Government</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="regularClientForm.get('rg_company_type')?.hasError('required')">Company Type is required</mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row m-b-24">
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Contact Person</mat-label>
+                            <input matInput formControlName="rg_company_person" required>
+                            <mat-error *ngIf="regularClientForm.get('rg_company_person')?.hasError('required')">
+                              Contact Person is required
+                            </mat-error>
+                            <mat-error *ngIf="regularClientForm.get('rg_company_person')?.hasError('pattern')">
+                              Only letters, spaces, apostrophes, or hyphens allowed
+                            </mat-error>
+                            <mat-error *ngIf="regularClientForm.get('rg_company_person')?.hasError('maxlength')">
+                              Max 50 characters
+                            </mat-error>
+                          </mat-form-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Company Phone</mat-label>
+                            <input matInput formControlName="rg_company_phone" maxlength="11">
+                            <mat-error *ngIf="regularClientForm.get('rg_company_phone')?.hasError('required')">Company Phone is required</mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row m-b-24">
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Vat Number</mat-label>
+                            <input matInput formControlName="rg_company_vat" maxlength="10">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Company Website</mat-label>
+                            <input matInput formControlName="rg_company_website" maxlength="50">
+                        </mat-form-field>
+                    </div>
+
+                </div>
+            </fieldset>
+
+
+            <div class="row m-b-24">
+                <div class="col-sm-12 text-right">
+                    <button mat-raised-button color="primary btn" [disabled]="!regularClientForm.valid"
+                        (click)="submit()">Save</button>
+                    <button mat-raised-button color="warn" (click)="onNoClick()" type="button">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

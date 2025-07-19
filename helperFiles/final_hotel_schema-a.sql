@@ -173,7 +173,13 @@ SET FOREIGN_KEY_CHECKS = 1;
         rg_company VARCHAR(100),
         rg_email VARCHAR(100),
         rg_address TEXT,
-        rg_phone VARCHAR(20),
+        rg_phone VARCHAR(30),
+        rg_company_phone VARCHAR(100),
+        rg_company_person VARCHAR(100),
+        rg_company_website VARCHAR(120),
+        rg_isliable VARCHAR(20),
+        rg_company_vat VARCHAR(10),
+        rg_company_type VARCHAR(50),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );

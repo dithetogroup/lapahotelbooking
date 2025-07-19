@@ -6,6 +6,7 @@ export const environment = {
   urlEndPoints: {
     getoccupancy: '/get-occupancy.php',
     getAllRoomList: '/get-all-rooms.php',
+
     addNewBooking: '/add-new-booking.php',
     cancelBooking: '/cancel-booking.php',
     editGuestPersonalDetails: '/edit-personal-details.php',
@@ -22,8 +23,12 @@ export const environment = {
     getAllBookingInvoices: '/get-booking-invoices.php',
     loginUser: '/login.php',    
     logoutUser: '/logout.php',
-
     getAllRoomRates: '/get-all-rooms-rates.php',
-    updateRoomRates: '/update-room-rates.php'
+    updateRoomRates: '/update-room-rates.php',
+    getRegularGuest: '/get-regular-guests.php',
+    //addRegularGuest: '/add-regular-guest.php',
+    updateRegularClient: '/update-regular-client.php',
+    addRegularClient: '/add-regular-client.php',
+    deleteRegularClient: '/delete-regular-client.php'
   }
 };

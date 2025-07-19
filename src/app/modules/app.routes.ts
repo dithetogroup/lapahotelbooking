@@ -42,6 +42,17 @@ export const APP_ROUTE: Route[] = [
         },
       },
       {
+        path: 'regular-clients',
+        canActivate: [AuthGuard], // optional
+        loadChildren: () =>
+          import('../modules/admin/regular-clients/regular-clients.routes').then(
+            (m) => m.REGULAR_CLIENTS_ROUTE
+          ),
+        data: {
+          role: ['ADMIN', 'BOOKING', 'EMPLOYEE'],
+        },
+      },
+      {
         path: 'bookings',
         canActivate: [AuthGuard],
         loadChildren: () =>
@@ -58,17 +69,6 @@ export const APP_ROUTE: Route[] = [
         loadChildren: () =>
           import('../modules/admin/rooms/rooms.routes').then(
             (m) => m.ROOMS_ROUTE
-          ),
-        data: {
-          role: ['ADMIN', 'EMPLOYEE'],
-        },
-      },
-      {
-        path: 'clients',
-        canActivate: [AuthGuard],
-        loadChildren: () =>
-          import('../modules/admin/clients/clients.routes').then(
-            (m) => m.CLIENTS_ROUTE
           ),
         data: {
           role: ['ADMIN', 'EMPLOYEE'],
