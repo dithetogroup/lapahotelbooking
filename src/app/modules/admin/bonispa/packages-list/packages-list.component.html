@@ -1,0 +1,141 @@
+<app-page-header></app-page-header>
+
+<mat-card>
+  <mat-card-header>
+    <div class="table-header-toolbar">
+      <div class="row">
+        <div class="col-sm-8">
+          <span class="table-header"></span>
+          <mat-form-field appearance="outline" class="search-box">
+            <mat-label class="search-label">Search...</mat-label>
+            <input #filter (keyup)="applyFilter($event)" matInput type="text">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-4">
+          <div class="right-side-btn">
+            <button mat-icon-button [hidden]="!selection.hasValue()" (click)="removeSelectedRows()"
+              class="tbl-header-btn text-red" matTooltip="Delete">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+            <button mat-icon-button class="text-indigo" (click)="select.open()"
+              matTooltip="Show/Hide Column">
+              <mat-icon>filter_list</mat-icon>
+              <mat-select #select [(ngModel)]="filter.value" style="width: 200px; display: table;"
+                class="column-filter">
+                <span class="table-column-label">Show/Hide Column</span>
+                <ng-container *ngFor="let cd of displayedColumns">
+                  <mat-option>
+                    <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="cd.visible"
+                      color="primary">
+                      {{ cd.label }}
+                    </mat-checkbox>
+                  </mat-option>
+                </ng-container>
+              </mat-select>
+            </button>
+            <button mat-icon-button (click)="openDialog('add')" class="tbl-header-btn text-green" matTooltip="Add">
+              <mat-icon>add_circle_outline</mat-icon>
+            </button>
+            <button mat-icon-button (click)="refresh()" class="tbl-header-btn text-dark-grey"
+              matTooltip="Refresh">
+              <mat-icon>refresh</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="overflow-auto">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-cell advance-table">
+        <ng-container matColumnDef="package_name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{ row.package_name }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="package_type">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{ row.package_type }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="package_time">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Minutes</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{ row.package_time }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="package_price">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Price</mat-header-cell>
+          <mat-cell *matCellDef="let row">R{{ row.package_price | number:'1.2-2' }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+
+        <button mat-icon-button color="primary" (click)="openDialog('edit', row)">
+            <app-feather-icons [icon]="'edit'" class="tbl-fav-edit"></app-feather-icons>
+        </button>
+        <button mat-icon-button color="warn" (click)="openDialog('delete', row)">
+            <app-feather-icons [icon]="'trash-2'" class="tbl-fav-delete"></app-feather-icons>
+        </button>
+
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="getDisplayedColumnDefs()"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: getDisplayedColumnDefs();"></mat-row>
+      </table>
+
+      <div *ngIf="dataSource.filteredData.length === 0 && !isLoading" class="no-results-message">
+        No packages found.
+      </div>
+      <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 25]"></mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Add/Edit Dialog -->
+<ng-template #packageDialog let-dialogRef="dialogRef" let-data="data">
+  <h2 mat-dialog-title>{{ data.action === 'edit' ? 'Edit Package' : 'Add Package' }}</h2>
+  <mat-dialog-content>
+    <form [formGroup]="packageForm">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="package_name" required>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="package_type" required>
+          <mat-option value="breakfast">Breakfast</mat-option>
+          <mat-option value="lunch">Lunch</mat-option>
+          <mat-option value="dinner">Dinner</mat-option>
+          <mat-option value="spa">Spa</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Duration (minutes)</mat-label>
+        <input matInput type="number" formControlName="package_time" required>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Price (R)</mat-label>
+        <input matInput type="number" formControlName="package_price" required>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close()">Cancel</button>
+    <button mat-raised-button color="primary" [disabled]="!packageForm.valid" (click)="savePackage(dialogRef, data.action)">
+      {{ data.action === 'edit' ? 'Update' : 'Add' }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<!-- Delete Confirmation Dialog -->
+<ng-template #deleteDialog let-dialogRef="dialogRef" let-data="data">
+  <h2 mat-dialog-title>Confirm Delete</h2>
+  <mat-dialog-content>
+    Are you sure you want to delete the package "<b>{{ data.package_name }}</b>"?
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close()">Cancel</button>
+    <button mat-raised-button color="warn" (click)="confirmDelete(dialogRef, data.id)">Delete</button>
+  </mat-dialog-actions>
+</ng-template>

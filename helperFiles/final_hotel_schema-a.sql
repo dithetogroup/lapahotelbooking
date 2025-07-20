@@ -5,13 +5,13 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Child-most
 DROP TABLE IF EXISTS guest_details;
 DROP TABLE IF EXISTS cancelled_rooms;
+DROP TABLE IF EXISTS packages;
 DROP TABLE IF EXISTS booking_packages;
 DROP TABLE IF EXISTS guest_bookings;
 DROP TABLE IF EXISTS room_details;
 DROP TABLE IF EXISTS rooms;
 DROP TABLE IF EXISTS room_types;
 DROP TABLE IF EXISTS bed_types;
-DROP TABLE IF EXISTS packages;
 DROP TABLE IF EXISTS regular_guests;
 
 -- RBAC relationships
@@ -20,12 +20,12 @@ DROP TABLE IF EXISTS role_permissions;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS permissions;
 DROP TABLE IF EXISTS users;
+
 DROP TABLE IF EXISTS spa_bookings;
 DROP TABLE IF EXISTS venue_bookings;
 DROP TABLE IF EXISTS spa_therapists;
 
 SET FOREIGN_KEY_CHECKS = 1;
-
 
     -- Bed Types
     CREATE TABLE bed_types (
@@ -111,10 +111,10 @@ SET FOREIGN_KEY_CHECKS = 1;
     );
 
 
+
      -- Spa Bookings
     CREATE TABLE spa_bookings (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        package_id INT,   -- Foreign key to packages.id
         therapist_id INT,  -- Foreign key to spa_therapists.id
         spbooking_title VARCHAR(100),
         spbooking_name VARCHAR(100),
@@ -126,13 +126,23 @@ SET FOREIGN_KEY_CHECKS = 1;
         spbooking_reason VARCHAR(100),
         spbooking_noofvisitors INT,
         spbooking_date DATE,
+        spbooking_time TIME NULL,
         spbooking_promotions BOOLEAN,
+        spbooking_totalprice DECIMAL(10,2),
         spbooking_bookedby VARCHAR(100),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        CONSTRAINT fk_spa_package FOREIGN KEY (package_id) REFERENCES packages(id),
         CONSTRAINT fk_spa_therapist FOREIGN KEY (therapist_id) REFERENCES spa_therapists(id)
     );
+
+    CREATE TABLE spa_booking_packages (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        spa_booking_id INT NOT NULL,
+        package_id INT NOT NULL,
+        FOREIGN KEY (spa_booking_id) REFERENCES spa_bookings(id) ON DELETE CASCADE,
+        FOREIGN KEY (package_id) REFERENCES packages(id) ON DELETE CASCADE
+    );
+
 
     -- Room Details
     CREATE TABLE room_details (

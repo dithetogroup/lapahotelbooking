@@ -6,7 +6,7 @@ header("Content-Type: application/json; charset=UTF-8");
 mysqli_set_charset($mysqli, "utf8");
 
 // ✅ Prepare SQL
-$sql = "SELECT id, package_name, package_price FROM packages ORDER BY package_name ASC";
+$sql = "SELECT id, package_name, package_price, package_time, package_type FROM packages ORDER BY package_name ASC";
 
 //error_log("[INFO] Fetching packages...");
 $result = $mysqli->query($sql);
@@ -24,6 +24,8 @@ while ($row = $result->fetch_assoc()) {
     $packages[] = [
         "id" => $row["id"],
         "package_name" => $row["package_name"],
+        "package_time" => $row["package_time"],
+        "package_type" => $row["package_type"],
         "package_price" => (float) str_replace(',', '', $row["package_price"])
     ];
 }

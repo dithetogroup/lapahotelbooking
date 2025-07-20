@@ -39,6 +39,17 @@ export const environment = {
     updateSpaBooking: '/update-spa-booking.php',
     addSpaBooking: '/add-spa-booking.php',
     getSpaTherapists: '/get-spa-therapists.php',
+    getSpaBookedSlots: '/get-spa-booked-slots.php',
+
+    //Packages',
+    updatePackage: '/update-package.php',
+    deletePackage: '/delete-package.php',
+    addPackage: '/add-package.php',
+
+    //Therapists
+    updateTherapist: '/update-therapist.php',
+    deleteTherapist: '/delete-therapist.php',
+    addTherapist: '/add-therapist.php',
 
   }
 };

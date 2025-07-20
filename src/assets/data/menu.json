@@ -69,7 +69,7 @@
     },
     {
       "route": "rooms",
-      "name": "rooms",
+      "name": "Rates",
       "type": "sub",
       "icon": "bed",
      
@@ -110,8 +110,12 @@
           "route": "room-rates",
           "name": "Room Rates",
           "type": "link"
-         
+        },  {
+          "route": "packages-list",
+          "name": "Other Packages",
+          "type": "link"
         }
+
       ]
      
     },

@@ -16,7 +16,35 @@ export class BoniSpaService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getSpaBookings(): Observable<{ data: SpaBooking[] }> {
+  deletePackage(id: number): Observable<any> {
+    debugger;
+    return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.deletePackage, { id });
+  }
+
+  updatePackage(data: any): Observable<any> {
+    debugger;
+    return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.updatePackage,data);
+  }
+
+  addPackage(data: any): Observable<any> {
+   // debugger;
+    return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.addPackage, data);
+  } 
+
+  //Spa Bookings
+  updateSpaBooking(formValue: SpaBooking): Observable<any> {
+    return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.updateSpaBooking,formValue);
+  }
+
+  getSpaBookedSlots(date: string) {
+    return this.httpClient.get<{ data: any[] }>(this.baseUrl + this.urlEndPoints.getSpaBookedSlots + '?date=' + date);
+  } 
+
+  addSpaBooking(formValue: SpaBooking): Observable<any> {
+     return this.httpClient.post<{ data: SpaBooking[] }>(this.baseUrl + this.urlEndPoints.addSpaBooking, formValue);
+   } 
+
+   getSpaBookings(): Observable<{ data: SpaBooking[] }> {
     return this.httpClient.get<{ data: SpaBooking[] }>(this.baseUrl + this.urlEndPoints.getSpaBookings);
   } 
 
@@ -24,19 +52,21 @@ export class BoniSpaService {
     return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.deleteSpaBooking, { id });
   }
 
-  updateSpaBooking(formValue: SpaBooking): Observable<any> {
-    return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.updateSpaBooking,formValue);
+  // Therapitst
+  addTherapist(data: any): Observable<any> {
+    return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.addTherapist, data);
+  } 
+
+  updateTherapist(data: any): Observable<any> {
+    return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.updateTherapist,data);
   }
 
-  addSpaBooking(formValue: SpaBooking): Observable<any> {
-    debugger;
-    return this.httpClient.post<{ data: SpaBooking[] }>(this.baseUrl + this.urlEndPoints.addSpaBooking, formValue);
-  } 
+  deleteTherapist(id: number): Observable<any> {
+    return this.httpClient.post<any>(this.baseUrl + this.urlEndPoints.deleteTherapist, { id });
+  }
 
-
-  getSpaTherapists(): Observable<{ data: any[] }> {
+  getSpaTherapists(): Observable<any> {
     return this.httpClient.get<{ data: any[] }>(this.baseUrl + this.urlEndPoints.getSpaTherapists);
   } 
-  
 
 }
