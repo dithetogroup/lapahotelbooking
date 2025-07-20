@@ -266,15 +266,30 @@ INSERT INTO regular_guests (
 ('LHRMG071725', 'Dr', 'Mandla', 'Gumede', 'Gumede & Partners', 'mandla.gumede@gumede.co.za', '44 4th St, Parktown', '0844444444', '0132468101', 'Phumzile Gwala', 'www.gumedeandpartners.com', 'Company', '22345', 'Private'),
 ('LHRKB071726', 'Prof', 'Kabelo', 'Bapela', 'Bapela Attorneys', 'kabelo@bapelaattorneys.co.za', '9 West St, Pretoria', '0855555555', '0143579111', 'Katlego Moagi', 'www.bapelaattorneys.co.za', 'Individual', '22345', 'Private');
 
+-- Bookings
 INSERT INTO spa_bookings (
-    package_id, therapist_id, spbooking_title, spbooking_name, spbooking_surname, spbooking_email,
+    therapist_id, spbooking_totalprice, spbooking_title, spbooking_name, spbooking_surname, spbooking_email,
     spbooking_contact, spbooking_addtionalinfo, spbooking_allergies, spbooking_reason,
-    spbooking_noofvisitors, spbooking_date, spbooking_promotions, spbooking_bookedby
-)
-VALUES
-  (3, 1, 'Mr', 'David', 'Molefe', 'david.molefe@email.com', '0821234567', 'None', 'Nuts', 'Relaxation', 1, '2025-07-20', false, 'Admin'),
-  (4, 2, 'Ms', 'Nadia', 'Sithole', 'nadia.sithole@email.com', '0822345678', 'Bring towel', '', 'Back pain', 1, '2025-07-21', true, 'Receptionist'),
-  (7, 3, 'Mrs', 'Lindiwe', 'Baloyi', 'lindiwe.baloyi@email.com', '0823456789', '', '', 'Sports injury', 2, '2025-07-22', false, 'Admin');
+    spbooking_noofvisitors, spbooking_date, spbooking_time, spbooking_promotions,
+    spbooking_bookedby, created_at, updated_at
+) VALUES
+(2, 300, 'Ms', 'Nadia', 'Sithole', 'nadia.sithole@email.com', '0822345678', '', 'None', 'Muscle Pain Relief', 1, '2025-07-20', '09:00', 0, 'Receptionist', NOW(), NOW()),
+(1, 200, 'Mr', 'David', 'Molefe', 'david.molefe@email.com', '0821234567', '', 'Nuts', 'Relaxation', 1, '2025-07-20', '10:00', 0, 'Admin', NOW(), NOW()),
+(3, 700, 'Mrs', 'Sarah', 'Nkosi', 'sarah.nkosi@email.com', '0829998888', '', '', 'Pampering/Self-care', 2, '2025-07-20', '11:00', 0, 'Admin', NOW(), NOW()),
+(2, 900, 'Ms', 'Linda', 'Mabena', 'linda.mabena@email.com', '0825554444', '', 'None', 'Beauty Treatment', 1, '2025-07-20', '13:00', 0, 'Receptionist', NOW(), NOW()),
+(2, 700, 'Mr', 'Peter', 'Smith', 'peter.smith@email.com', '0834443333', '', '', 'Back pain', 1, '2025-07-21', '08:30', 0, 'Receptionist', NOW(), NOW()),
+(3, 900, 'Dr', 'Sam', 'Zulu', 'sam.zulu@email.com', '0831234561', '', 'Peanuts', 'Detox', 1, '2025-07-21', '09:15', 0, 'Admin', NOW(), NOW());
+
+-- Get IDs for bookings you just inserted, then seed packages:
+-- Example: Booking 1 (id=1) gets package 4,8; Booking 2 (id=2) gets 3; etc.
+
+INSERT INTO spa_booking_packages (spa_booking_id, package_id) VALUES
+(1, 4), (1, 8),   -- Booking 1: packages 4 and 8
+(2, 3),           -- Booking 2: package 3
+(3, 6),           -- Booking 3: package 6
+(4, 5), (4, 7),   -- Booking 4: packages 5 and 7
+(5, 8),           -- Booking 5: package 8
+(6, 6), (6, 4);   -- Booking 6: packages 6 and 4
 
 
 INSERT INTO venue_bookings (

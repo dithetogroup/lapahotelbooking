@@ -1,0 +1,68 @@
+<div class="dialogContainer">
+    <div class="modalHeader">
+      <div class="modalTitle">{{ dialogTitle }}</div>
+      <button mat-icon-button (click)="onNoClick()" class="modal-close-button" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div mat-dialog-content>
+      <form [formGroup]="therapistForm" class="form-field-full">
+        <div class="row m-b-24">
+          <div class="col-sm-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Title</mat-label>
+              <!-- <input matInput formControlName="therapists_title" required> -->
+              <mat-select formControlName="therapists_title">
+                <mat-option value="">Select Title</mat-option>
+                <mat-option value="Mr">Mr</mat-option>
+                <mat-option value="Mrs">Mrs</mat-option>
+                <mat-option value="Ms">Ms</mat-option>
+                <mat-option value="Dr">Dr</mat-option>
+                <mat-option value="Prof">Prof</mat-option>
+                <mat-option value="Rev">Rev</mat-option>
+            </mat-select>
+              <mat-error *ngIf="therapistForm.get('therapists_title')?.hasError('required')">
+                Title is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="therapists_name" required maxlength="30">
+              <mat-error *ngIf="therapistForm.get('therapists_name')?.hasError('required')">
+                Name is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row m-b-24">
+          <div class="col-sm-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Surname</mat-label>
+              <input matInput formControlName="therapists_surname" required maxlength="40">
+              <mat-error *ngIf="therapistForm.get('therapists_surname')?.hasError('required')">
+                Surname is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Contact</mat-label>
+              <input matInput formControlName="therapists_contacts" required maxlength="11">
+              <mat-error *ngIf="therapistForm.get('therapists_contacts')?.hasError('required')">
+                Contact is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row m-b-24">
+          <div class="col-sm-12 text-right">
+            <button mat-raised-button color="primary btn btnspace" [disabled]="!therapistForm.valid" (click)="submit()">Save</button>
+            <button mat-raised-button color="warn" (click)="onNoClick()" type="button">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  

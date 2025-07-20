@@ -6,7 +6,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { NgFor, NgIf, NgClass } from "@angular/common";
+import { NgFor, NgIf, NgClass, DecimalPipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -24,6 +24,10 @@ import { ViewSpaBookingsDialogComponent } from "../../dialogs/view-spa-bookings-
 import { DeleteSpaBookingDialogComponent } from "../../dialogs/delete-spa-booking-dialog/delete-spa-booking-dialog.component";
 import { ToastrService } from "ngx-toastr";
 import { TableExportUtil } from "@shared/util/tableExportUtil";
+import {
+  MatDatepickerInputEvent,
+  MatDatepickerModule,
+} from "@angular/material/datepicker";
 
 @Component({
   selector: "app-spa-bookings",
@@ -47,6 +51,8 @@ import { TableExportUtil } from "@shared/util/tableExportUtil";
     FormsModule,
     MatOptionModule,
     MatSelectModule,
+    MatDatepickerModule,
+    DecimalPipe,
     PageHeaderComponent, // <app-page-header>
   ],
   templateUrl: "./spa-bookings.component.html",
@@ -57,15 +63,24 @@ export class SpaBookingsComponent {
   selection = new SelectionModel<SpaBooking>(true, []);
   isLoading = false;
 
+  searchText = "";
+  selectedDate: string | null = null;
+  filter = { value: null };
+
+  startDate: string | null = null;
+  endDate: string | null = null;
+
   columnDefinitions = [
     { def: "spbooking_date", label: "Booking Date", visible: true },
+    { def: "spbooking_time", label: "Booking Time", visible: true },
+    { def: "package_names", label: "Package", visible: true },
+    { def: "spbooking_reason", label: "Reason for massage", visible: true },
     { def: "client_name", label: "Client Name", visible: true },
-    { def: "spbooking_email", label: "Email", visible: true },
-    { def: "spbooking_contact", label: "Contact", visible: true },
     { def: "spbooking_noofvisitors", label: "No. of Visitors", visible: true },
-    { def: "package_name", label: "Package", visible: true },
+    { def: "spbooking_contact", label: "Contact", visible: true },
+    { def: "spbooking_email", label: "Email", visible: true },
     { def: "therapist_name", label: "Therapist", visible: true },
-    { def: "spbooking_reason", label: "Reason", visible: false },
+    { def: "spbooking_totalprice", label: "Total Price", visible: true },
     { def: "spbooking_allergies", label: "Allergies", visible: false },
     { def: "spbooking_bookedby", label: "Booked By", visible: true },
   ];
@@ -77,10 +92,41 @@ export class SpaBookingsComponent {
     private boniSpaService: BoniSpaService,
     private toastr: ToastrService,
     public dialog: MatDialog // For modals (edit/view/delete)
-  ) {}
+  ) {
 
+    this.dataSource.filterPredicate = (data, filter) => {
+      const filterObj = JSON.parse(filter);
+    
+      const matchesSearch =
+        !filterObj.search ||
+        (
+          (data.spbooking_name || "") +
+          " " +
+          (data.spbooking_surname || "") +
+          " " +
+          (data.package_names || "") +
+          " " +
+          (data.spbooking_reason || "")
+        )
+          .toLowerCase()
+          .includes(filterObj.search);
+    
+      // Range filter
+      let matchesDate = true;
+      if (filterObj.startDate) {
+        matchesDate = data.spbooking_date >= filterObj.startDate;
+      }
+      if (filterObj.endDate && matchesDate) {
+        matchesDate = data.spbooking_date <= filterObj.endDate;
+      }
+    
+      return matchesSearch && matchesDate;
+    };
+    
+  }
   ngOnInit(): void {
     this.fetchSpaBookings();
+   // this.refresh();
   }
 
   fetchSpaBookings() {
@@ -88,33 +134,101 @@ export class SpaBookingsComponent {
     this.boniSpaService.getSpaBookings().subscribe({
       next: (response) => {
         this.dataSource.data = response.data;
-        console.log("spa bookings", this.dataSource.data);
+     //   console.log('booked data', this.dataSource.data);
         this.isLoading = false;
         setTimeout(() => {
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
+          this.applyFilter(); 
+
         });
       },
       error: (error) => {
         this.isLoading = false;
-        // handle error
       },
     });
   }
 
   refresh() {
     this.fetchSpaBookings();
+    this.searchText = '';
+    this.selectedDate = null;
+    this.startDate = null;  // If using date ranges
+    this.endDate = null;    // If using date ranges
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value
-      .trim()
-      .toLowerCase();
-    this.dataSource.filter = filterValue;
+  onSearchChange(event: any) {
+    this.searchText = event.target.value.trim().toLowerCase();
+    this.applyFilter();
+  }
+
+  applyFilter() {
+    const filterObj = {
+      search: this.searchText || '',
+      startDate: this.startDate,
+      endDate: this.endDate
+    };
+    this.dataSource.filter = JSON.stringify(filterObj);
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
   }
+  
+
+  formatDateToLocalYYYYMMDD(date: any): string | null {
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      console.warn('formatDateToLocalYYYYMMDD got invalid date:', date);
+      return null;
+    }
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  
+  
+  onDateChange(event: MatDatepickerInputEvent<any>) {
+    let val = event.value;
+    if (val && typeof val.isValid === 'function' && val.isValid()) {
+      // It's a Moment object
+      this.selectedDate = val.format('YYYY-MM-DD');
+    } else if (val instanceof Date && !isNaN(val.getTime())) {
+      // It's a native Date
+      this.selectedDate = this.formatDateToLocalYYYYMMDD(val);
+    } else {
+      this.selectedDate = null;
+    }
+    this.applyFilter();
+  }
+
+
+  onStartDateChange(event: MatDatepickerInputEvent<any>) {
+    const val = event.value;
+    if (val && typeof val.isValid === 'function' && val.isValid()) {
+      this.startDate = val.format('YYYY-MM-DD');
+    } else if (val instanceof Date && !isNaN(val.getTime())) {
+      this.startDate = this.formatDateToLocalYYYYMMDD(val);
+    } else {
+      this.startDate = null;
+    }
+    this.applyFilter();
+  }
+  
+  onEndDateChange(event: MatDatepickerInputEvent<any>) {
+    const val = event.value;
+    if (val && typeof val.isValid === 'function' && val.isValid()) {
+      this.endDate = val.format('YYYY-MM-DD');
+    } else if (val instanceof Date && !isNaN(val.getTime())) {
+      this.endDate = this.formatDateToLocalYYYYMMDD(val);
+    } else {
+      this.endDate = null;
+    }
+    this.applyFilter();
+  }
+  
+  
+  
+  
 
   getDisplayedColumns() {
     const cols = this.columnDefinitions
@@ -137,12 +251,10 @@ export class SpaBookingsComponent {
 
   removeSelectedRows() {
     const selectedIds = this.selection.selected.map((row) => row.id);
-    // Optionally, call API to delete, then refresh
     this.dataSource.data = this.dataSource.data.filter(
       (row) => !selectedIds.includes(row.id)
     );
     this.selection.clear();
-    // Optionally show a success toast/snackbar
   }
 
   addNew() {
@@ -221,22 +333,20 @@ export class SpaBookingsComponent {
 
   exportExcel() {
     const exportData = this.dataSource.filteredData.map((x: SpaBooking) => ({
-      'Booking Date': x.spbooking_date,
-      'Client Name': `${x.spbooking_title} ${x.spbooking_name} ${x.spbooking_surname}`,
-      'Email': x.spbooking_email,
-      'Contact': x.spbooking_contact,
-      'No. of Visitors': x.spbooking_noofvisitors,
-      'Package': x.package_name,
-      'Therapist': x.therapist_name,
-      'Reason': x.spbooking_reason,
-      'Allergies': x.spbooking_allergies,
-      'Booked By': x.spbooking_bookedby,
-      'Created At': x.created_at,
-      'Updated At': x.updated_at,
+      "Booking Date": x.spbooking_date,
+      "Client Name": `${x.spbooking_title} ${x.spbooking_name} ${x.spbooking_surname}`,
+      Email: x.spbooking_email,
+      Contact: x.spbooking_contact,
+      "No. of Visitors": x.spbooking_noofvisitors,
+      Package: x.package_names,
+      Therapist: x.therapist_name,
+      Reason: x.spbooking_reason,
+      Allergies: x.spbooking_allergies,
+      "Booked By": x.spbooking_bookedby,
+      "Created At": x.created_at,
+      "Updated At": x.updated_at,
     }));
-  
-    TableExportUtil.exportToExcel(exportData, 'spa-bookings');
-  }
 
-  
+    TableExportUtil.exportToExcel(exportData, "spa-bookings");
+  }
 }

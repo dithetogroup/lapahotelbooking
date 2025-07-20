@@ -5,6 +5,7 @@ import { AddRoomComponent } from './add-room/add-room.component';
 import { EditRoomComponent } from './edit-room/edit-room.component';
 import { AllRoomsComponent } from './all-rooms/all-rooms.component';
 import { RoomTypesComponent } from './room-types/room-types.component';
+import { PackagesListComponent } from '../bonispa/packages-list/packages-list.component';
 
 export const ROOMS_ROUTE: Route[] = [
   {
@@ -32,5 +33,12 @@ export const ROOMS_ROUTE: Route[] = [
     path: 'room-rates',
     component: RoomRatesComponent,
   },
+  {
+    path: 'packages-list',
+    component: PackagesListComponent,
+  },
+
+
+
   { path: '**', component: Page404Component },
 ];

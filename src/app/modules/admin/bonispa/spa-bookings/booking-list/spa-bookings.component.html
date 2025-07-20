@@ -6,11 +6,23 @@
       <div class="row">
         <div class="col-sm-8">
           <span class="table-header"></span>
-          <mat-form-field appearance="outline" class="search-box">
-            <mat-label class="search-label">Search...</mat-label>
-            <input #filter (keyup)="applyFilter($event)" matInput type="text">
-            <mat-icon matSuffix>search</mat-icon>
-          </mat-form-field>
+          <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+            <mat-form-field appearance="outline">
+              <input matInput placeholder="Search..." (keyup)="onSearchChange($event)">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <input matInput [matDatepicker]="startPicker" placeholder="From" (dateChange)="onStartDateChange($event)">
+                <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                <mat-datepicker #startPicker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <input matInput [matDatepicker]="endPicker" placeholder="To" (dateChange)="onEndDateChange($event)">
+                <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                <mat-datepicker #endPicker></mat-datepicker>
+              </mat-form-field>
+              
+          </div>
         </div>
         <div class="col-sm-4">
           <div class="right-side-btn">
@@ -80,8 +92,14 @@
                 <ng-container [matColumnDef]="column.def">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.label }}</mat-header-cell>
                     <mat-cell *matCellDef="let row">
-                    {{ row[column.def] }}
-                    </mat-cell>
+                        <ng-container *ngIf="column.def === 'spbooking_totalprice'; else defaultCell">
+                          R{{ row[column.def] | number:'1.2-2' }}
+                        </ng-container>
+                        <ng-template #defaultCell>
+                          {{ row[column.def] }}
+                        </ng-template>
+                      </mat-cell>
+                      
                 </ng-container>
                 </ng-container>
             </ng-container>
@@ -104,6 +122,11 @@
           <mat-header-row *matHeaderRowDef="getDisplayedColumns()"></mat-header-row>
           <mat-row *matRowDef="let row; columns: getDisplayedColumns();" (click)="editCall(row)" matRipple></mat-row>
         </table>
+        <!-- If table is empty after filtering, show a message -->
+            <div *ngIf="!isLoading && dataSource.filteredData.length === 0" class="no-results-message">
+                No bookings for this date
+            </div>
+            
       </div>
 
       <div *ngIf="isLoading" class="tbl-spinner">

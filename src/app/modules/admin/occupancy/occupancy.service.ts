@@ -102,7 +102,7 @@ export class OccupancyService {
     return this.http.post<any>(this.baseUrl + this.urlEndPoints.editGuestPersonalDetails, body); 
   }
 
-  getPackages(): Observable<any[]> {
+  getPackages(): Observable<any> {
     return this.http.get<any[]>(this.baseUrl + this.urlEndPoints.getPackages);
   }
 

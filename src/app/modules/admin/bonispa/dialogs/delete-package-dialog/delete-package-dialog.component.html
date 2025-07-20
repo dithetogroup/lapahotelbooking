@@ -1,0 +1,22 @@
+<div class="dialogContainer">
+    <div class="modalHeader">
+      <div class="modalTitle">
+        <mat-icon color="warn" style="vertical-align: middle;">warning</mat-icon>
+        Confirm Delete
+      </div>
+      <!-- <button mat-icon-button (click)="onNoClick()" aria-label="Close dialog" class="float">
+        <mat-icon>close</mat-icon>
+      </button> -->
+    </div>
+    <div mat-dialog-content style="padding-top: 16px;">
+      <p>
+        Are you sure you want to delete this Therapist
+        <b>{{ data.package_name }}</b>?
+      </p>
+      <div class="text-right" style="margin-top: 24px;">
+        <button mat-raised-button color="warn" (click)="confirmDelete()">Yes, Delete</button>
+        <button mat-raised-button (click)="onNoClick()" style="margin-left: 10px;">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
